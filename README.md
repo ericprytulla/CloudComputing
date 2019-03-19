@@ -1,5 +1,5 @@
 # CloudComputing
 
 
-##Contributors
+## Contributors
 EricPrytulla, Katharina Post
