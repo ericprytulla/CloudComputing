@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Socket.IO chat</title>
+    <!--<link rel="stylesheet" type="text/css" href="style.css">-->
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font: 13px Helvetica, Arial; }
@@ -14,6 +15,7 @@
     </style>
 </head>
 <body>
+<ul id="notification"></ul>
 <ul id="messages"></ul>
 <form action="">
     <input id="m" autocomplete="off" /><button>Send</button>
@@ -21,16 +23,20 @@
 <script src="/socket.io/socket.io.js"></script>
 <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
 <script>
+    let nickname = "Peter";
     $(function () {
         var socket = io();
         $('form').submit(function(e){
             e.preventDefault(); // prevents page reloading
-            socket.emit('chat message', $('#m').val());
+            socket.emit('chat message', {nickname: nickname, message: $('#m').val()});
             $('#m').val('');
             return false;
         });
         socket.on('chat message', function(msg){
-            $('#messages').append($('<li>').text(msg));
+            $('#messages').append($('<li>').text(msg.nickname + ": " + msg.message));
+        });
+        socket.on('user connected', function(msg){
+            $('#notification').append($('<li>').text(msg));
         });
     });
 </script>
