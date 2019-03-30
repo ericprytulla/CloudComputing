@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {SocketService} from "../services/socket.service";
 
 @Component({
   selector: 'app-login',
@@ -7,9 +8,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoginComponent implements OnInit {
 
-  constructor() { }
+  username: string = null;
+  required: boolean = false;
+
+  constructor(private socketService: SocketService) {
+
+  }
 
   ngOnInit() {
   }
 
+  onClickLogin(){
+    if (this.username){
+      this.socketService.login(this.username);
+    } else {
+      this.required = true;
+    }
+  }
 }

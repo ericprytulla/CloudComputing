@@ -58,6 +58,11 @@ $fontAsap: 'Asap', sans-serif;
     padding: 10px 10px;
     margin: 15px -10px;
   }
+  .required {
+    border: 1px solid #c00 !important;
+  }
+
+
 
   > button {
     font-family: $fontAsap;

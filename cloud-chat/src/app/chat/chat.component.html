@@ -1,5 +1,19 @@
-<ul id="notification"></ul>
-<ul id="messages"></ul>
-<form action="">
-  <input id="m" autocomplete="off" /><button>Send</button>
-</form>
+<div id="chat-component-wrapper">
+  <div [ngClass]="alertMessage?'active':''" class="alert" ><span>{{alertMessage}}</span></div>
+  <div id="chat-rooms-selector">
+    <div *ngFor="let room of chatrooms" class="chat-room-selector">{{room}}</div>
+  </div>
+  <div id="chat-room">
+    <div id="messages">
+      <div class="message-wrapper" *ngFor="let msg of messages">
+        <div *ngIf="msg.sender" class="message-sender">{{msg.sender}}:</div>
+        <div [ngClass]="msg.sender?'message':'message-personal'" class="message-personal"><span class="message-text">{{msg.message}}</span></div>
+      </div>
+    </div>
+    <form (ngSubmit)="onClickSend()">
+      <input name="message" id="m" autocomplete="off" [(ngModel)]="message"/>
+      <button>Send</button>
+    </form>
+  </div>
+
+</div>
