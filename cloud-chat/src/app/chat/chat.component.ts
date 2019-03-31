@@ -43,6 +43,10 @@ export class Chatroom{
   popUser(user: User){
     this.users.splice(this.users.findIndex((u: User)=>{return user.equals(u)}), 1);
   }
+  findUserById(id: string){
+    let index = this.users.findIndex((u: User) => {return u.id == id});
+    return this.users[index];
+  }
 }
 
 export class User {
@@ -71,17 +75,23 @@ export class ChatComponent implements OnInit {
   private alertMessage: string = "";
   private positive: boolean;
   private messages: Message[] = [];
-  private chatrooms: any = {'global': new Chatroom('global', '0','group' )};
-
-
+  private chatrooms: any = {'global': new Chatroom('global', 'global','group' )};
 
   constructor(private socketService: SocketService) {
     this.socketService._socket.on('connected users', (users) => {
-      users.map((user) => {this.chatrooms.global.pushUser(user); console.log(user)});
+      users.map((user) => {this.chatrooms.global.pushUser(user)});
     });
     this.socketService._socket.on('chat message', (msg) => {
-      console.log(msg);
       this.chatrooms[msg.to].pushMessage(new Message(msg.message, msg.to, new Date(msg.timeStamp), msg.sender));
+    });
+    this.socketService._socket.on('personal message', (msg) => {
+      let message = new Message(msg.message, msg.to, new Date(msg.timeStamp), msg.sender)
+      if (!this.chatrooms[msg.sender]){
+        this.chatrooms[msg.sender] = new Chatroom(this.chatrooms['global'].findUserById(msg.sender).name, msg.sender, 'personal');
+        this.chatrooms[msg.sender].pushUser(this.chatrooms['global'].findUserById(msg.sender));
+      }
+      this.chatrooms[msg.sender].pushMessage(message);
+
     });
     this.socketService._socket.on('user connected', (user, id) => {
       this.chatrooms.global.pushUser(new User(user, id));
@@ -104,7 +114,18 @@ export class ChatComponent implements OnInit {
   }
 
   onClickCreateGroup(){
+    var name = prompt('Please enter the chatroom name','Blob');
+    if (name != null && name != "" && this.chatrooms[name]) {
+      alert(name);
+    }
+    this.chatrooms[name] = new Chatroom(name, name, 'group');
+    this.selected = name;
+  }
 
+  onClickPrivateMessage(to: User){
+    this.chatrooms[to.id] = new Chatroom(to.name, to.id, 'private');
+    this.selected = to.id;
+    this.chatrooms[to.id].pushUser(to);
   }
 
   private sendAlert(msg: string, positive: boolean){
@@ -114,5 +135,4 @@ export class ChatComponent implements OnInit {
       this.alertMessage = null;
     }, 2000);
   }
-
 }

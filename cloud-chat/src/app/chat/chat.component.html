@@ -1,7 +1,7 @@
 <div id="chat-component-wrapper">
   <div id="chat-rooms-selector">
     <div *ngFor="let room of chatrooms | keyvalue" class="chat-room-selector" (click)="selected = room.key">
-      <div class="centered-text">{{room.value.name}}</div>
+      <div class="centered-text" [ngClass]="room.key==selected?'selected-room':''">{{room.value.name}}</div>
     </div>
     <button id="add-group" (click)="onClickCreateGroup()">
       +
@@ -11,13 +11,13 @@
     <div id="header">
       <p>
         <span>You</span>
-        <span *ngFor="let user of chatrooms[selected].users">, {{user.name}}</span>
+        <span *ngFor="let user of chatrooms[selected].users" (click)="onClickPrivateMessage(user)" class="clickable">, {{user.name}}</span>
       </p>
     </div>
     <div id="messages">
       <div [ngClass]="{'positive':positive, 'negative': !positive, 'active': alertMessage}" class="alert" ><span>{{alertMessage}}</span></div>
       <div class="message-wrapper" *ngFor="let msg of chatrooms[selected].messages">
-        <div *ngIf="msg.sender" class="message-sender">{{msg.sender}}:</div>
+        <div *ngIf="msg.sender" class="message-sender">{{chatrooms['global'].findUserById(msg.sender).name}}:</div>
         <div [ngClass]="msg.sender?'message':'message-personal'" class="message-personal">
           <div class="message-text">{{msg.message}}</div>
           <div class="message-timestamp">{{msg.timeStampString}}</div>
