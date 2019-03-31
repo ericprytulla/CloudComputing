@@ -12,19 +12,24 @@ form button {
 }
 
 .alert {
-  position:absolute;
-  top:0px;
+  
   z-index: 1000;
   width:100%;
   height:0;
   box-sizing:border-box;
   color:white;
   text-align:center;
-  background:rgba(0,200,0,1);
   overflow:hidden;
   box-sizing:border-box;
   transition:height .2s;
   display: inline-block;
+
+}
+.positive {
+  background:rgba(0,200,0,1);
+}
+.negative {
+  background:rgba(200,0,0,1);
 }
 
 #chat-rooms-selector {
@@ -36,12 +41,24 @@ form button {
 }
 
 .chat-room-selector {
+  display: inline-block;
+  cursor: pointer;
   position: relative;
   float: left;
   width: 100%;
   height: 50px;
   background: #eee;
   border-bottom: 2px solid #ccc;
+  text-align: center;
+  font-size: 30px;
+  padding-top: 10px;
+}
+
+#add-group {
+  width: 100%;
+  height: 50px;
+  font-size: 30px;
+  padding-top: 10px;
 }
 
 #chat-room {
@@ -49,6 +66,15 @@ form button {
   float: left;
   width: 80%;
   height: 100%;
+}
+
+#header {
+  position: relative;
+  float: left;
+  width: 100%;
+  text-wrap: normal;
+  min-height: 50px;
+  background: #fff;
 }
 
 .message-wrapper {
@@ -81,6 +107,18 @@ form button {
   border-radius: 10px;
   background: #00f;
   color: #fff;
+}
+
+.message-text {
+  width: 100%;
+}
+
+.message-timestamp {
+  position: relative;
+  width: 100%;
+  font-size: 0.7em;
+  text-align: right;
+  color: lightslategrey;
 }
 
 .active{
