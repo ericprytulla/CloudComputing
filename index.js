@@ -13,10 +13,10 @@ io.on('connection', function(socket){
         msg.sender = socket.id;
         if (msg.to == "global"){
             console.log('message: ' + JSON.stringify(msg));
-            socket.broadcast.emit('chat message', msg);
+            socket.broadcast.emit('group message', msg);
         } else {
             console.log('message: ' + JSON.stringify(msg));
-            socket.broadcast.to(msg.to).emit('personal message', msg);
+            socket.broadcast.to(msg.to).emit(msg.type + ' message', msg);
         }
     });
     socket.on('disconnect', function(){
@@ -24,8 +24,15 @@ io.on('connection', function(socket){
         socket.broadcast.emit('user disconnected', socket.username, socket.id);
         users.splice(users.findIndex((id)=>{return id == this.id}),1);
     });
-    socket.on('join group', function(name, socketId) {
+    socket.on('create group', function (name) {
         console.log('new group');
+        socket.join(name);
+        socket.broadcast.emit('group created', name, socket.id);
+    });
+    socket.on('join group', function(name) {
+        console.log('join group');
+        socket.join(name);
+        socket.broadcast.to(name).emit('user joined', name, socket.id);
     });
 });
 

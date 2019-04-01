@@ -27,6 +27,10 @@ export class SocketService {
     return false;
   }
 
+  createRoom(name: string){
+    this.socket.emit('create group', name);
+  }
+
   get _socket(){
     return this.socket;
   }
