@@ -31,6 +31,10 @@ export class SocketService {
     this.socket.emit('create group', name);
   }
 
+  joinRoom(id: string){
+    this.socket.emit('join group', id);
+  }
+
   get _socket(){
     return this.socket;
   }

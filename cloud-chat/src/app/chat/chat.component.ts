@@ -24,14 +24,16 @@ export class Chatroom{
   readonly name: string;
   readonly id: string;
   readonly type: string;
+  public isMember: boolean;
   public messages: Message[] = [];
   public users: User[] = [];
   public last_msg: Date;
 
-  constructor(name, id, type: string){
+  constructor(name, id, type: string, isMember: boolean){
     this.id = id;
     this.name = name;
     this.type = type;
+    this.isMember = isMember;
   }
 
   pushMessage(message: Message){
@@ -77,21 +79,25 @@ export class ChatComponent implements OnInit {
   private alertMessage: string = "";
   private positive: boolean;
   private messages: Message[] = [];
-  private chatrooms: any = {'global': new Chatroom('global', 'global','group' )};
+  private chatrooms: any = {'global': new Chatroom('global', 'global','group', true )};
 
   constructor(private socketService: SocketService) {
     this.socketService._socket.on('connected users', (users) => {
       users.map((user) => {this.chatrooms.global.pushUser(user)});
     });
+    this.socketService._socket.on('existing groups', (groups) => {
+      groups.map((group) => {
+        this.chatrooms[group.id] = new Chatroom(group.id, group.id, 'group', false);
+        group.users.map( user => this.chatrooms[group.id].pushUser(this.chatrooms['global'].findUserById(user)));
+      });
+    });
     this.socketService._socket.on('group message', (msg) => {
-      console.log(msg);
       this.chatrooms[msg.to].pushMessage(new Message(msg.message, msg.to, new Date(msg.timeStamp), msg.type, msg.sender));
     });
     this.socketService._socket.on('personal message', (msg) => {
       let message = new Message(msg.message, msg.to, new Date(msg.timeStamp), msg.type ,msg.sender)
-      console.log(msg);
       if (!this.chatrooms[msg.sender]){
-        this.chatrooms[msg.sender] = new Chatroom(this.chatrooms['global'].findUserById(msg.sender).name, msg.sender, 'personal');
+        this.chatrooms[msg.sender] = new Chatroom(this.chatrooms['global'].findUserById(msg.sender).name, msg.sender, 'personal', true);
         this.chatrooms[msg.sender].pushUser(this.chatrooms['global'].findUserById(msg.sender));
       }
       this.chatrooms[msg.sender].pushMessage(message);
@@ -101,11 +107,10 @@ export class ChatComponent implements OnInit {
       this.sendAlert('user ' + user + ' connected', true);
     });
     this.socketService._socket.on('group created', (name, userId) => {
-      this.chatrooms[name] = new Chatroom(name, name, 'group');
+      this.chatrooms[name] = new Chatroom(name, name, 'group', false);
       this.chatrooms[name].pushUser(this.chatrooms['global'].findUserById(userId));
     });
     this.socketService._socket.on('user joined', (name, userId) => {
-      this.chatrooms[name] = new Chatroom(name, name, 'group');
       this.chatrooms[name].pushUser(this.chatrooms['global'].findUserById(userId));
     });
     this.socketService._socket.on('user disconnected', (user, id) => {
@@ -129,13 +134,18 @@ export class ChatComponent implements OnInit {
     if (name != null && name != "" && this.chatrooms[name]) {
       alert("Chatroom " + name + " existiert bereits!");
     }
-    this.chatrooms[name] = new Chatroom(name, name, 'group');
+    this.chatrooms[name] = new Chatroom(name, name, 'group', true);
     this.selected = name;
     this.socketService.createRoom(name);
   }
 
+  onClickJoinGroup() {
+    this.chatrooms[this.selected].isMember = true;
+    this.socketService.joinRoom(this.selected);
+  }
+
   onClickPrivateMessage(to: User){
-    this.chatrooms[to.id] = new Chatroom(to.name, to.id, 'personal');
+    this.chatrooms[to.id] = new Chatroom(to.name, to.id, 'personal', true);
     this.selected = to.id;
     this.chatrooms[to.id].pushUser(to);
   }

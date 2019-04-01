@@ -32,7 +32,6 @@ form button {
   box-sizing:border-box;
   transition:height .2s;
   display: inline-block;
-
 }
 .positive {
   background:rgba(0,200,0,1);
@@ -68,6 +67,13 @@ form button {
   height: 50px;
   font-size: 30px;
   padding-top: 10px;
+}
+
+#join-chat {
+  padding: 3px;
+  position: fixed;
+  bottom: 0;
+  width: 80%;
 }
 
 #chat-room {

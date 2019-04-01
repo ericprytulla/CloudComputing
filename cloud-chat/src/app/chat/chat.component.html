@@ -10,7 +10,7 @@
   <div id="chat-room">
     <div id="header">
       <p>
-        <span>You</span>
+        <span *ngIf="chatrooms[selected].isMember">You</span>
         <span *ngFor="let user of chatrooms[selected].users" (click)="onClickPrivateMessage(user)" class="clickable">, {{user.name}}</span>
       </p>
     </div>
@@ -24,7 +24,8 @@
         </div>
       </div>
     </div>
-    <form (ngSubmit)="onClickSend()">
+    <button *ngIf="!chatrooms[selected].isMember" id="join-chat" (click)="onClickJoinGroup()">JOIN CHAT</button>
+    <form *ngIf="chatrooms[selected].isMember" (ngSubmit)="onClickSend()">
       <input name="message" id="m" autocomplete="off" [(ngModel)]="message"/>
       <button>Send</button>
     </form>
