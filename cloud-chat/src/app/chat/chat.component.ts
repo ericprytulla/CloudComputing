@@ -3,16 +3,18 @@ import {SocketService} from "../services/socket.service";
 
 export class Message{
   readonly sender: string;
-  readonly message: string;
+  public message: string;
+  public media: string | ArrayBuffer;
   readonly to: string;
   readonly timeStamp: Date;
   readonly type: string;
-  constructor(message: string, to: string, timeStamp: Date, type: string, sender?: string){
+  constructor(message: string, media: string | ArrayBuffer, to: string, timeStamp: Date, type: string, sender?: string){
     this.message = message;
     this.sender = sender;
     this.to = to;
     this.timeStamp = timeStamp;
     this.type = type;
+    this.media = media;
   }
 
   get timeStampString(): string{
@@ -75,10 +77,11 @@ export class User {
 export class ChatComponent implements OnInit {
 
   public selected: string = 'global';
+  public file: string | ArrayBuffer;
   private message: string;
   private alertMessage: string = "";
   private positive: boolean;
-  private messages: Message[] = [];
+  public typeFile: boolean = false;
   private chatrooms: any = {'global': new Chatroom('global', 'global','group', true )};
 
   constructor(private socketService: SocketService) {
@@ -92,10 +95,11 @@ export class ChatComponent implements OnInit {
       });
     });
     this.socketService._socket.on('group message', (msg) => {
-      this.chatrooms[msg.to].pushMessage(new Message(msg.message, msg.to, new Date(msg.timeStamp), msg.type, msg.sender));
+      this.chatrooms[msg.to].pushMessage(new Message(msg.message, msg.media, msg.to, new Date(msg.timeStamp), msg.type, msg.sender));
+      console.log(msg.media);
     });
     this.socketService._socket.on('personal message', (msg) => {
-      let message = new Message(msg.message, msg.to, new Date(msg.timeStamp), msg.type ,msg.sender)
+      let message = new Message(msg.message, msg.file, msg.to, new Date(msg.timeStamp), msg.type ,msg.sender)
       if (!this.chatrooms[msg.sender]){
         this.chatrooms[msg.sender] = new Chatroom(this.chatrooms['global'].findUserById(msg.sender).name, msg.sender, 'personal', true);
         this.chatrooms[msg.sender].pushUser(this.chatrooms['global'].findUserById(msg.sender));
@@ -123,10 +127,12 @@ export class ChatComponent implements OnInit {
   }
 
   onClickSend(){
-    var messageObj: Message = new Message(this.message, this.selected, new Date(), this.chatrooms[this.selected].type);
+    var messageObj: Message = new Message(this.message, this.file, this.selected, new Date(), this.chatrooms[this.selected].type);
     this.socketService.sendMessage(messageObj);
     this.chatrooms[this.selected].messages.push(messageObj);
     this.message = '';
+    this.file == null;
+    console.log(this.file);
   }
 
   onClickCreateGroup(){
@@ -150,11 +156,25 @@ export class ChatComponent implements OnInit {
     this.chatrooms[to.id].pushUser(to);
   }
 
+  onFileSelect(event){
+    let reader = new FileReader();
+    reader.addEventListener("load", () => {
+      this.file = reader.result;
+    }, false);
+    if (event.target.files[0]) {
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  }
+
   private sendAlert(msg: string, positive: boolean){
     this.positive = positive;
     this.alertMessage = msg;
     setTimeout(() => {
       this.alertMessage = null;
     }, 2000);
+  }
+  switchMode(event){
+    event.preventDefault();
+    this.typeFile = !this.typeFile;
   }
 }

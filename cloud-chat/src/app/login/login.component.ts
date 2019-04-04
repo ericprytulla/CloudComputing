@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
   }
 
   onClickLogin(){
-    if (this.username){
+    if (this.username && this.username.length > 1 && this.username.length < 10){
       this.socketService.login(this.username);
     } else {
       this.required = true;

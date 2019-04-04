@@ -1,9 +1,11 @@
 let app = require('express')();
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
+let cors = require('cors')
 let users = [];
 let groups = [];
 let groupUsers = {};
+app.use(cors())
 
 io.on('connection', function(socket){
     console.log('a user connected');
