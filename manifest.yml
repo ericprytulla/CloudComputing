@@ -1,0 +1,4 @@
+applications:
+- name: sharp-lewin
+  memory: 512M
+  instances: 1

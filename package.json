@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "start": "node index.js"
+  },
   "name": "socket-io-chat",
   "version": "0.0.1",
   "description": "Cloud Computing chat application",

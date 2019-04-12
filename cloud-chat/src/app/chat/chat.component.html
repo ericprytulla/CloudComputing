@@ -20,12 +20,12 @@
         <div *ngIf="msg.sender" class="message-sender">{{chatrooms['global'].findUserById(msg.sender).name}}:</div>
         <div [ngClass]="msg.sender?'message':'message-personal'" class="message-personal">
           <div class="message-text">{{msg.message}}</div>
+          <div *ngIf="msg.media">
+            <img *ngIf="msg.media.split(':')[1].split('/')[0] == 'image'" [src]="msg.media" width="500px" alt="">
+            <video *ngIf="msg.media.split(':')[1].split('/')[0] == 'video'" [src]="msg.media" width="500px"></video>
+            <audio *ngIf="msg.media.split(':')[1].split('/')[0] == 'audio'" [src]="msg.media" width="500px"></audio>
+          </div>
           <div class="message-timestamp">{{msg.timeStampString}}</div>
-        </div>
-        <div *ngIf="msg.media">
-          <img *ngIf="msg.media.split(':')[1].split('/')[0] == 'image'" [src]="msg.media" width="500px" alt="">
-          <video *ngIf="msg.media.split(':')[1].split('/')[0] == 'video'" [src]="msg.media" width="500px"></video>
-          <audio *ngIf="msg.media.split(':')[1].split('/')[0] == 'audio'" [src]="msg.media" width="500px"></audio>
         </div>
       </div>
     </div>

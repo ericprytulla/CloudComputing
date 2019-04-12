@@ -6,18 +6,10 @@
 package.json,7\0\7030d0b2f71b999ff89a343de08c414af32fc93a
 8
 index.js,a\7\a77b15c0d64cf6111e025645e562faf8ccabb9d7
-E
-pages/login/login.css,b\2\b243be581aaf09b46cfbf752c7c5e6ed097d5b5a
-E
-pages/home/index.html,c\d\cd7ae50dcc2dc052d5e6926a11482d68cd76b3a4
-F
-pages/login/login.html,4\7\47f6fe7b06cd32e699e74f9d62e852930d65fcf6
 F
 cloud-chat/src/main.ts,4\c\4ca9ff89c48c9eee0df25b3f8c96615ff2937d67
 U
 %cloud-chat/src/app/app.component.html,c\b\cb5c8a0bf8a89f3aa7c9152acc3e0968062806e3
-D
-pages/home/style.css,7\7\773880a3287215900f3323abae9c7b0f3c812d2b
 P
  cloud-chat/src/app/app.module.ts,7\3\730952adb40a65a8b85f54aca36e28a8efb9c4c6
 S
@@ -44,3 +36,9 @@ J
 +cloud-chat/src/app/chat/chat.component.scss,a\8\a8a5b4c55473ceab38fcb4dd452e773183305217
 [
 +cloud-chat/src/app/chat/chat.component.html,c\a\ca404d5583bea0698ec1155c1fef95118e8d52a2
+A
+package-lock.json,f\a\fa288d1472d29beccb489a676f68739ad365fc47
+G
+cloud-chat/package.json,a\4\a4cc6ccfdb06b00a68c83c2ba71372809c3565b8
+[
++cloud-chat/src/app/login/login.component.ts,4\9\493b7b34a29c504c385482737dfd022eba63b4fe

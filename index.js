@@ -1,11 +1,16 @@
-let app = require('express')();
+let express = require('express');
+let app = express();
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
 let cors = require('cors')
 let users = [];
 let groups = [];
 let groupUsers = {};
+let port = process.env.PORT || 3000;
+const html = __dirname + '/frontend';
 app.use(cors())
+    .use(express.static(html));
+
 
 io.on('connection', function(socket){
     console.log('a user connected');
@@ -47,6 +52,6 @@ io.on('connection', function(socket){
 });
 
 
-http.listen(3000, function(){
-    console.log('listening on *:3000');
+http.listen(port, function(){
+    console.log('listening on *:' + port);
 });

@@ -78,11 +78,11 @@ export class ChatComponent implements OnInit {
 
   public selected: string = 'global';
   public file: string | ArrayBuffer;
-  private message: string;
-  private alertMessage: string = "";
-  private positive: boolean;
+  public message: string;
+  public alertMessage: string = "";
+  public positive: boolean;
   public typeFile: boolean = false;
-  private chatrooms: any = {'global': new Chatroom('global', 'global','group', true )};
+  public chatrooms: any = {'global': new Chatroom('global', 'global','group', true )};
 
   constructor(private socketService: SocketService) {
     this.socketService._socket.on('connected users', (users) => {
@@ -164,6 +164,7 @@ export class ChatComponent implements OnInit {
     if (event.target.files[0]) {
       reader.readAsDataURL(event.target.files[0]);
     }
+    console.log(event);
   }
 
   private sendAlert(msg: string, positive: boolean){
