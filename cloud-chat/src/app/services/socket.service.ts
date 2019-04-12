@@ -40,7 +40,7 @@ export class SocketService {
   }
 
   private connect(username: string) {
-    this.socket = io('localhost:3000' , {query: {username: username}});
+    this.socket = io( {query: {username: username}});
     this.socket.connect();
     this.connected = true;
   }

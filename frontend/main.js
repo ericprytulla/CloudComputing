@@ -551,7 +551,7 @@ var SocketService = /** @class */ (function () {
         configurable: true
     });
     SocketService.prototype.connect = function (username) {
-        this.socket = socket_io_client__WEBPACK_IMPORTED_MODULE_2__('localhost:3000', { query: { username: username } });
+        this.socket = socket_io_client__WEBPACK_IMPORTED_MODULE_2__({ query: { username: username } });
         this.socket.connect();
         this.connected = true;
     };
