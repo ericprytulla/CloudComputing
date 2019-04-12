@@ -62,3 +62,5 @@ typings/
 
 # node.js
 package-log.json
+
+.idea
