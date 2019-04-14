@@ -144,6 +144,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _login_login_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./login/login.component */ "./src/app/login/login.component.ts");
 /* harmony import */ var _chat_chat_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./chat/chat.component */ "./src/app/chat/chat.component.ts");
 /* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/fesm5/forms.js");
+/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
+
 
 
 
@@ -166,6 +168,7 @@ var AppModule = /** @class */ (function () {
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_1__["BrowserModule"],
                 _app_routing_module__WEBPACK_IMPORTED_MODULE_4__["AppRoutingModule"],
+                _angular_common_http__WEBPACK_IMPORTED_MODULE_9__["HttpClientModule"],
                 _angular_forms__WEBPACK_IMPORTED_MODULE_8__["FormsModule"]
             ],
             providers: [_guards_auth_guard__WEBPACK_IMPORTED_MODULE_5__["AuthGuard"]],
@@ -217,6 +220,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _services_socket_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../services/socket.service */ "./src/app/services/socket.service.ts");
+/* harmony import */ var _services_tone_analyzer_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../services/tone-analyzer.service */ "./src/app/services/tone-analyzer.service.ts");
+
 
 
 
@@ -277,9 +282,10 @@ var User = /** @class */ (function () {
 }());
 
 var ChatComponent = /** @class */ (function () {
-    function ChatComponent(socketService) {
+    function ChatComponent(socketService, toneAnalyzer) {
         var _this = this;
         this.socketService = socketService;
+        this.toneAnalyzer = toneAnalyzer;
         this.selected = 'global';
         this.alertMessage = "";
         this.typeFile = false;
@@ -327,9 +333,9 @@ var ChatComponent = /** @class */ (function () {
         var messageObj = new Message(this.message, this.file, this.selected, new Date(), this.chatrooms[this.selected].type);
         this.socketService.sendMessage(messageObj);
         this.chatrooms[this.selected].messages.push(messageObj);
+        this.toneAnalyzer.getTone(this.message);
         this.message = '';
         this.file == null;
-        console.log(this.file);
     };
     ChatComponent.prototype.onClickCreateGroup = function () {
         var name = prompt('Please enter the chatroom name', 'Blob');
@@ -378,7 +384,7 @@ var ChatComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./chat.component.html */ "./src/app/chat/chat.component.html"),
             styles: [__webpack_require__(/*! ./chat.component.scss */ "./src/app/chat/chat.component.scss")]
         }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_services_socket_service__WEBPACK_IMPORTED_MODULE_2__["SocketService"]])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_services_socket_service__WEBPACK_IMPORTED_MODULE_2__["SocketService"], _services_tone_analyzer_service__WEBPACK_IMPORTED_MODULE_3__["ToneAnalyzerService"]])
     ], ChatComponent);
     return ChatComponent;
 }());
@@ -562,6 +568,50 @@ var SocketService = /** @class */ (function () {
         tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_router__WEBPACK_IMPORTED_MODULE_3__["Router"]])
     ], SocketService);
     return SocketService;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/services/tone-analyzer.service.ts":
+/*!***************************************************!*\
+  !*** ./src/app/services/tone-analyzer.service.ts ***!
+  \***************************************************/
+/*! exports provided: ToneAnalyzerService */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ToneAnalyzerService", function() { return ToneAnalyzerService; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
+
+
+
+var ToneAnalyzerService = /** @class */ (function () {
+    function ToneAnalyzerService(http) {
+        this.http = http;
+        this.apiUrl = "https://sharp-payne.eu-de.mybluemix.net/tone";
+        this.headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]();
+    }
+    ToneAnalyzerService.prototype.getTone = function (msg) {
+        this.headers = this.headers.set('Accept', 'application/json');
+        this.headers = this.headers.set('Content-Type', 'application/json');
+        this.headers = this.headers.set('mode', 'cors');
+        console.log(JSON.stringify(this.headers));
+        this.http.post(this.apiUrl, { 'texts': [msg] }, { headers: this.headers }).subscribe(function (resp) {
+            console.log(JSON.stringify(resp));
+        });
+    };
+    ToneAnalyzerService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
+            providedIn: 'root'
+        }),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClient"]])
+    ], ToneAnalyzerService);
+    return ToneAnalyzerService;
 }());
 
 

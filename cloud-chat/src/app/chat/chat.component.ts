@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {SocketService} from "../services/socket.service";
+import {ToneAnalyzerService} from "../services/tone-analyzer.service";
 
 export class Message{
   readonly sender: string;
@@ -84,7 +85,7 @@ export class ChatComponent implements OnInit {
   public typeFile: boolean = false;
   public chatrooms: any = {'global': new Chatroom('global', 'global','group', true )};
 
-  constructor(private socketService: SocketService) {
+  constructor(private socketService: SocketService, private toneAnalyzer: ToneAnalyzerService) {
     this.socketService._socket.on('connected users', (users) => {
       users.map((user) => {this.chatrooms.global.pushUser(user)});
     });
@@ -130,9 +131,9 @@ export class ChatComponent implements OnInit {
     var messageObj: Message = new Message(this.message, this.file, this.selected, new Date(), this.chatrooms[this.selected].type);
     this.socketService.sendMessage(messageObj);
     this.chatrooms[this.selected].messages.push(messageObj);
+    this.toneAnalyzer.getTone(this.message);
     this.message = '';
     this.file == null;
-    console.log(this.file);
   }
 
   onClickCreateGroup(){

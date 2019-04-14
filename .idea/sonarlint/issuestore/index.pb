@@ -42,3 +42,5 @@ G
 cloud-chat/package.json,a\4\a4cc6ccfdb06b00a68c83c2ba71372809c3565b8
 [
 +cloud-chat/src/app/login/login.component.ts,4\9\493b7b34a29c504c385482737dfd022eba63b4fe
+d
+4cloud-chat/src/app/services/tone-analyzer.service.ts,8\6\862eecf138b3026cff233193110d0b850a6d8628
