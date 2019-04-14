@@ -1,4 +1,4 @@
-<div id="chat-component-wrapper">
+<div id="chat-component-wrapper" [style.background-color]="ConservationMood">
   <div id="chat-rooms-selector">
     <div *ngFor="let room of chatrooms | keyvalue" class="chat-room-selector" (click)="selected = room.key">
       <div class="centered-text" [ngClass]="room.key==selected?'selected-room':''">{{room.value.name}}</div>
@@ -25,6 +25,7 @@
             <video *ngIf="msg.media.split(':')[1].split('/')[0] == 'video'" [src]="msg.media" width="500px"></video>
             <audio *ngIf="msg.media.split(':')[1].split('/')[0] == 'audio'" [src]="msg.media" width="500px"></audio>
           </div>
+          <div class="message-mood">{{msg.mood}}</div>
           <div class="message-timestamp">{{msg.timeStampString}}</div>
         </div>
       </div>

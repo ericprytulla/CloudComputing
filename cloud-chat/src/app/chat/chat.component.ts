@@ -6,16 +6,18 @@ export class Message{
   readonly sender: string;
   public message: string;
   public media: string | ArrayBuffer;
+  public mood: string;
   readonly to: string;
   readonly timeStamp: Date;
   readonly type: string;
-  constructor(message: string, media: string | ArrayBuffer, to: string, timeStamp: Date, type: string, sender?: string){
+  constructor(message: string, media: string | ArrayBuffer, to: string, timeStamp: Date, type: string, mood?: string, sender?: string){
     this.message = message;
     this.sender = sender;
     this.to = to;
     this.timeStamp = timeStamp;
     this.type = type;
     this.media = media;
+    this.mood = mood;
   }
 
   get timeStampString(): string{
@@ -83,6 +85,7 @@ export class ChatComponent implements OnInit {
   public alertMessage: string = "";
   public positive: boolean;
   public typeFile: boolean = false;
+  public moods = ['Red', 'OrangeRed', 'Coral', 'Orange', 'Gold', 'Yellow', 'GreenYellow', 'Lawngreen', 'YellowGreen', 'LimeGreen', 'Green'];
   public chatrooms: any = {'global': new Chatroom('global', 'global','group', true )};
 
   constructor(private socketService: SocketService, private toneAnalyzer: ToneAnalyzerService) {
@@ -96,11 +99,11 @@ export class ChatComponent implements OnInit {
       });
     });
     this.socketService._socket.on('group message', (msg) => {
-      this.chatrooms[msg.to].pushMessage(new Message(msg.message, msg.media, msg.to, new Date(msg.timeStamp), msg.type, msg.sender));
+      this.chatrooms[msg.to].pushMessage(new Message(msg.message, msg.media, msg.to, new Date(msg.timeStamp), msg.type, msg.mood, msg.sender));
       console.log(msg.media);
     });
     this.socketService._socket.on('personal message', (msg) => {
-      let message = new Message(msg.message, msg.file, msg.to, new Date(msg.timeStamp), msg.type ,msg.sender)
+      let message = new Message(msg.message, msg.file, msg.to, new Date(msg.timeStamp), msg.type, msg.mood, msg.sender)
       if (!this.chatrooms[msg.sender]){
         this.chatrooms[msg.sender] = new Chatroom(this.chatrooms['global'].findUserById(msg.sender).name, msg.sender, 'personal', true);
         this.chatrooms[msg.sender].pushUser(this.chatrooms['global'].findUserById(msg.sender));
@@ -129,9 +132,11 @@ export class ChatComponent implements OnInit {
 
   onClickSend(){
     var messageObj: Message = new Message(this.message, this.file, this.selected, new Date(), this.chatrooms[this.selected].type);
-    this.socketService.sendMessage(messageObj);
-    this.chatrooms[this.selected].messages.push(messageObj);
-    this.toneAnalyzer.getTone(this.message);
+    this.toneAnalyzer.getTone(this.message).then((mood: any) => {
+      messageObj.mood = mood;
+      this.chatrooms[this.selected].messages.push(messageObj);
+      this.socketService.sendMessage(messageObj);
+    });
     this.message = '';
     this.file == null;
   }
@@ -178,5 +183,9 @@ export class ChatComponent implements OnInit {
   switchMode(event){
     event.preventDefault();
     this.typeFile = !this.typeFile;
+  }
+
+  get ConservationMood(){
+    return this.moods[this.toneAnalyzer.ConversationMood];
   }
 }

@@ -18,13 +18,12 @@ export class SocketService {
   }
 
   login(username: string) {
-    this.connect(username)
+    this.connect(username);
     this.router.navigate(["/chat"]);
   }
 
   sendMessage(message: Message){
     this.socket.emit('chat message', message);
-    return false;
   }
 
   createRoom(name: string){
