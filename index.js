@@ -1,4 +1,3 @@
-require('dotenv').config({silent: true});
 let express = require('express');
 let app = express();
 let http = require('http').Server(app);
@@ -11,6 +10,8 @@ let port = process.env.PORT || 3000;
 const html = __dirname + '/frontend';
 const ToneAnalyzerV3 = require('watson-developer-cloud/tone-analyzer/v3');
 const bodyParser = require('body-parser');
+
+require('dotenv').config({silent: true});
 // Create the service wrapper
 const toneAnalyzer = new ToneAnalyzerV3({
     version: '2017-09-21',
