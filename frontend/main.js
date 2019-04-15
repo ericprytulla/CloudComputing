@@ -564,7 +564,7 @@ var SocketService = /** @class */ (function () {
         configurable: true
     });
     SocketService.prototype.connect = function (username) {
-        this.socket = socket_io_client__WEBPACK_IMPORTED_MODULE_2__('localhost:3000', { query: { username: username } });
+        this.socket = socket_io_client__WEBPACK_IMPORTED_MODULE_2__({ query: { username: username } });
         this.socket.connect();
         this.connected = true;
     };
@@ -600,7 +600,7 @@ __webpack_require__.r(__webpack_exports__);
 var ToneAnalyzerService = /** @class */ (function () {
     function ToneAnalyzerService(http) {
         this.http = http;
-        this.apiUrl = "http://localhost:3000/tone";
+        this.apiUrl = "/tone";
         this.mood = 10;
         this.max = 10;
         this.min = 0;
