@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="71b6e0c3-cc89-4d34-ba98-c2724c0323f0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/manifest.yml" beforeDir="false" afterPath="$PROJECT_DIR$/manifest.yml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -18,11 +18,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="830">
               <caret line="127" column="31" selection-start-line="127" selection-start-column="31" selection-end-line="127" selection-end-column="31" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/manifest.yml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="17">
+              <caret line="1" column="25" selection-start-line="1" selection-start-column="25" selection-end-line="1" selection-end-column="25" />
             </state>
           </provider>
         </entry>
@@ -84,6 +93,7 @@
         <option value="$PROJECT_DIR$/cloud-chat/src/app/services/tone-analyzer.service.ts" />
         <option value="$PROJECT_DIR$/cloud-chat/src/app/services/socket.service.ts" />
         <option value="$PROJECT_DIR$/index.js" />
+        <option value="$PROJECT_DIR$/manifest.yml" />
       </list>
     </option>
   </component>
@@ -190,7 +200,7 @@
       <workItem from="1554964167246" duration="2008000" />
       <workItem from="1555071319503" duration="4483000" />
       <workItem from="1555248532980" duration="50000" />
-      <workItem from="1555248709679" duration="11435000" />
+      <workItem from="1555248709679" duration="12003000" />
     </task>
     <task id="LOCAL-00001" summary="Implemented socket.io tutorial">
       <created>1553087774675</created>
@@ -203,7 +213,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="145986000" />
+    <option name="totallyTimeSpent" value="146554000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-6" y="-6" width="1867" height="1093" extended-state="6" />
@@ -479,9 +489,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/manifest.yml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/cloud-chat/src/app/chat/chat.component.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="303">
@@ -496,6 +503,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="830">
           <caret line="127" column="31" selection-start-line="127" selection-start-column="31" selection-end-line="127" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/manifest.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="25" selection-start-line="1" selection-start-column="25" selection-end-line="1" selection-end-column="25" />
         </state>
       </provider>
     </entry>
