@@ -15,8 +15,8 @@ require('dotenv').config({silent: true});
 // Create the service wrapper
 const toneAnalyzer = new ToneAnalyzerV3({
     version: '2017-09-21',
-    iam_apikey: process.env.TONE_ANALYZER_IAM_APIKEY,
-    url: process.env.TONE_ANALYZER_URL
+    iam_apikey: 'bNKO7L2h06NaGyb_ATmr_Smdw5p3kMTpqg5uC_q4VEt',
+    url: 'https://gateway-fra.watsonplatform.net/tone-analyzer/api'
 });
 app.use(cors())
     .use(bodyParser.json())
