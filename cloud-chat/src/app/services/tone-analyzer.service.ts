@@ -5,7 +5,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
   providedIn: 'root'
 })
 export class ToneAnalyzerService {
-  private apiUrl: string = "http://localhost:3000/tone";
+  private apiUrl: string = "/tone";
   private mood: number = 10;
   private max: number = 10;
   private min: number = 0;
