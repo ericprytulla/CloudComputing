@@ -99,11 +99,12 @@ export class ChatComponent implements OnInit {
       });
     });
     this.socketService._socket.on('group message', (msg) => {
-      this.chatrooms[msg.to].pushMessage(new Message(msg.message, msg.media, msg.to, new Date(msg.timeStamp), msg.type, msg.mood, msg.sender));
-      console.log(msg.media);
+      this.toneAnalyzer.moodify(msg.mood.mood);
+      this.chatrooms[msg.to].pushMessage(new Message(msg.message, msg.media, msg.to, new Date(msg.timeStamp), msg.type, msg.mood.mood, msg.sender));
     });
     this.socketService._socket.on('personal message', (msg) => {
-      let message = new Message(msg.message, msg.file, msg.to, new Date(msg.timeStamp), msg.type, msg.mood, msg.sender)
+      let message = new Message(msg.message, msg.file, msg.to, new Date(msg.timeStamp), msg.type, msg.mood.mood, msg.sender);
+      this.toneAnalyzer.moodify(msg.mood.mood);
       if (!this.chatrooms[msg.sender]){
         this.chatrooms[msg.sender] = new Chatroom(this.chatrooms['global'].findUserById(msg.sender).name, msg.sender, 'personal', true);
         this.chatrooms[msg.sender].pushUser(this.chatrooms['global'].findUserById(msg.sender));
@@ -132,11 +133,8 @@ export class ChatComponent implements OnInit {
 
   onClickSend(){
     var messageObj: Message = new Message(this.message, this.file, this.selected, new Date(), this.chatrooms[this.selected].type);
-    this.toneAnalyzer.getTone(this.message).then((mood: any) => {
-      messageObj.mood = mood;
-      this.chatrooms[this.selected].messages.push(messageObj);
-      this.socketService.sendMessage(messageObj);
-    });
+    this.chatrooms[this.selected].messages.push(messageObj);
+    this.socketService.sendMessage(messageObj);
     this.message = '';
     this.file == null;
   }
@@ -170,7 +168,6 @@ export class ChatComponent implements OnInit {
     if (event.target.files[0]) {
       reader.readAsDataURL(event.target.files[0]);
     }
-    console.log(event);
   }
 
   private sendAlert(msg: string, positive: boolean){

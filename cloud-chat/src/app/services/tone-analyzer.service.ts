@@ -5,7 +5,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
   providedIn: 'root'
 })
 export class ToneAnalyzerService {
-  private apiUrl: string = "/tone";
+  private apiUrl: string = "http://localhost:3000/tone";
   private mood: number = 10;
   private max: number = 10;
   private min: number = 0;
@@ -14,27 +14,20 @@ export class ToneAnalyzerService {
   constructor(private http: HttpClient) {
   }
 
-  getTone(msg: string) {
-    this.headers = this.headers.set('Accept','application/json');
-    this.headers = this.headers.set('Content-Type','application/json');
-    this.headers = this.headers.set('mode','cors');
-    return new Promise(resolve => {
-      this.http.post(this.apiUrl, {'texts': [msg]}, {headers: this.headers}).subscribe((resp: any) => {
-        switch (resp.mood) {
-          case 'happy':
-            if (this.mood < this.max) {
-              this.mood++;
-            }
-            break;
-          case 'unhappy':
-            if (this.mood > this.min) {
-              this.mood--;
-            }
-            break;
+  moodify(mood: string) {
+    console.log(mood);
+    switch (mood) {
+      case 'happy':
+        if (this.mood < this.max) {
+          this.mood++;
         }
-        resolve(resp.mood);
-      });
-    });
+        break;
+      case 'unhappy':
+        if (this.mood > this.min) {
+          this.mood--;
+        }
+        break;
+    }
   }
 
   get ConversationMood(): number {

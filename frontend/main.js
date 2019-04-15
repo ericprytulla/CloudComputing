@@ -302,11 +302,12 @@ var ChatComponent = /** @class */ (function () {
             });
         });
         this.socketService._socket.on('group message', function (msg) {
-            _this.chatrooms[msg.to].pushMessage(new Message(msg.message, msg.media, msg.to, new Date(msg.timeStamp), msg.type, msg.mood, msg.sender));
-            console.log(msg.media);
+            _this.toneAnalyzer.moodify(msg.mood.mood);
+            _this.chatrooms[msg.to].pushMessage(new Message(msg.message, msg.media, msg.to, new Date(msg.timeStamp), msg.type, msg.mood.mood, msg.sender));
         });
         this.socketService._socket.on('personal message', function (msg) {
-            var message = new Message(msg.message, msg.file, msg.to, new Date(msg.timeStamp), msg.type, msg.mood, msg.sender);
+            var message = new Message(msg.message, msg.file, msg.to, new Date(msg.timeStamp), msg.type, msg.mood.mood, msg.sender);
+            _this.toneAnalyzer.moodify(msg.mood.mood);
             if (!_this.chatrooms[msg.sender]) {
                 _this.chatrooms[msg.sender] = new Chatroom(_this.chatrooms['global'].findUserById(msg.sender).name, msg.sender, 'personal', true);
                 _this.chatrooms[msg.sender].pushUser(_this.chatrooms['global'].findUserById(msg.sender));
@@ -332,13 +333,9 @@ var ChatComponent = /** @class */ (function () {
     ChatComponent.prototype.ngOnInit = function () {
     };
     ChatComponent.prototype.onClickSend = function () {
-        var _this = this;
         var messageObj = new Message(this.message, this.file, this.selected, new Date(), this.chatrooms[this.selected].type);
-        this.toneAnalyzer.getTone(this.message).then(function (mood) {
-            messageObj.mood = mood;
-            _this.chatrooms[_this.selected].messages.push(messageObj);
-            _this.socketService.sendMessage(messageObj);
-        });
+        this.chatrooms[this.selected].messages.push(messageObj);
+        this.socketService.sendMessage(messageObj);
         this.message = '';
         this.file == null;
     };
@@ -369,7 +366,6 @@ var ChatComponent = /** @class */ (function () {
         if (event.target.files[0]) {
             reader.readAsDataURL(event.target.files[0]);
         }
-        console.log(event);
     };
     ChatComponent.prototype.sendAlert = function (msg, positive) {
         var _this = this;
@@ -568,7 +564,7 @@ var SocketService = /** @class */ (function () {
         configurable: true
     });
     SocketService.prototype.connect = function (username) {
-        this.socket = socket_io_client__WEBPACK_IMPORTED_MODULE_2__({ query: { username: username } });
+        this.socket = socket_io_client__WEBPACK_IMPORTED_MODULE_2__('localhost:3000', { query: { username: username } });
         this.socket.connect();
         this.connected = true;
     };
@@ -604,34 +600,26 @@ __webpack_require__.r(__webpack_exports__);
 var ToneAnalyzerService = /** @class */ (function () {
     function ToneAnalyzerService(http) {
         this.http = http;
-        this.apiUrl = "/tone";
+        this.apiUrl = "http://localhost:3000/tone";
         this.mood = 10;
         this.max = 10;
         this.min = 0;
         this.headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]();
     }
-    ToneAnalyzerService.prototype.getTone = function (msg) {
-        var _this = this;
-        this.headers = this.headers.set('Accept', 'application/json');
-        this.headers = this.headers.set('Content-Type', 'application/json');
-        this.headers = this.headers.set('mode', 'cors');
-        return new Promise(function (resolve) {
-            _this.http.post(_this.apiUrl, { 'texts': [msg] }, { headers: _this.headers }).subscribe(function (resp) {
-                switch (resp.mood) {
-                    case 'happy':
-                        if (_this.mood < _this.max) {
-                            _this.mood++;
-                        }
-                        break;
-                    case 'unhappy':
-                        if (_this.mood > _this.min) {
-                            _this.mood--;
-                        }
-                        break;
+    ToneAnalyzerService.prototype.moodify = function (mood) {
+        console.log(mood);
+        switch (mood) {
+            case 'happy':
+                if (this.mood < this.max) {
+                    this.mood++;
                 }
-                resolve(resp.mood);
-            });
-        });
+                break;
+            case 'unhappy':
+                if (this.mood > this.min) {
+                    this.mood--;
+                }
+                break;
+        }
     };
     Object.defineProperty(ToneAnalyzerService.prototype, "ConversationMood", {
         get: function () {

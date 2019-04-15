@@ -3,24 +3,18 @@ let app = express();
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
 let cors = require('cors');
+var bodyParser = require("body-parser");
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 let users = [];
 let groups = [];
 let groupUsers = {};
 let port = process.env.PORT || 3000;
 const html = __dirname + '/frontend';
-const ToneAnalyzerV3 = require('watson-developer-cloud/tone-analyzer/v3');
-const bodyParser = require('body-parser');
 
-require('dotenv').config({silent: true});
-// Create the service wrapper
-const toneAnalyzer = new ToneAnalyzerV3({
-    version: '2017-09-21',
-    iam_apikey: 'bNKO7L2h06NaGyb_ATmr_Smdw5p3kMTpqg5uC_q4VEt',
-    url: 'https://gateway-fra.watsonplatform.net/tone-analyzer/api'
-});
-app.use(cors())
-    .use(bodyParser.json())
-    .use(express.static(html));
+
+app.use(cors());
+app.use(express.static(html));
+app.use(bodyParser.json());
 
 
 io.on('connection', function(socket){
@@ -33,13 +27,15 @@ io.on('connection', function(socket){
     users.push({id: socket.id, name: socket.username});
     socket.on('chat message', function(msg){
         msg.sender = socket.id;
-        if (msg.to == "global"){
-            console.log('message: ' + JSON.stringify(msg));
-            socket.broadcast.emit('group message', msg);
-        } else {
-            console.log('message: ' + JSON.stringify(msg));
-            socket.broadcast.to(msg.to).emit(msg.type + ' message', msg);
-        }
+        getTone(msg.message).then(mood => {
+            msg.mood = mood;
+            if (msg.to == "global"){
+                socket.broadcast.emit('group message', msg);
+            } else {
+                socket.broadcast.to(msg.to).emit(msg.type + ' message', msg);
+            }
+        });
+
     });
     socket.on('disconnect', function(){
         console.log('user disconnected');
@@ -63,69 +59,23 @@ io.on('connection', function(socket){
 });
 
 
-
-function createToneRequest (request) {
-    let toneChatRequest;
-
-    if (request.texts) {
-        toneChatRequest = {utterances: []};
-
-        for (let i in request.texts) {
-            const utterance = {text: request.texts[i]};
-            toneChatRequest.utterances.push(utterance);
-        }
-    }
-
-    return toneChatRequest;
-}
-
-function happyOrUnhappy (response) {
-    const happyTones = ['satisfied', 'excited', 'polite', 'sympathetic'];
-    const unhappyTones = ['sad', 'frustrated', 'impolite'];
-
-    let happyValue = 0;
-    let unhappyValue = 0;
-
-    for (let i in response.utterances_tone) {
-        const utteranceTones = response.utterances_tone[i].tones;
-        for (let j in utteranceTones) {
-            if (happyTones.includes(utteranceTones[j].tone_id)) {
-                happyValue = happyValue + utteranceTones[j].score;
+function getTone(message){
+    return new Promise( resolve => {
+        console.log('tone Request');
+        let request = new XMLHttpRequest();
+        request.open('POST', 'https://sharp-payne.eu-de.mybluemix.net/tone');
+        request.setRequestHeader('Content-Type', 'application/json');
+        request.setRequestHeader('Accept', 'application/json');
+        request.addEventListener('load', function(event) {
+            if (request.status >= 200 && request.status < 300) {
+                resolve(JSON.parse(request.responseText));
+            } else {
+                console.warn(request.statusText, request.responseText);
             }
-            if (unhappyTones.includes(utteranceTones[j].tone_id)) {
-                unhappyValue = unhappyValue + utteranceTones[j].score;
-            }
-        }
-    }
-    if (happyValue >= unhappyValue) {
-        return 'happy';
-    }
-    else {
-        return 'unhappy';
-    }
-}
-
-/* Example
-{
-  "texts": ["I do not like what I see", "I like very much what you have said."]
-}
-*/
-app.post('/tone', (req, res, next) => {
-    const toneRequest = createToneRequest(req.body);
-
-    if (toneRequest) {
-        toneAnalyzer.toneChat(toneRequest, (err, response) => {
-            if (err) {
-                return next(err);
-            }
-            const answer = {mood: happyOrUnhappy(response)};
-            return res.json(answer);
         });
-    }
-    else {
-        return res.status(400).send({error: 'Invalid Input'});
-    }
-});
+        request.send('{"texts": ["'+ message + '"]}');
+    });
+};
 
 http.listen(port, function(){
     console.log('listening on  *:' + port);
