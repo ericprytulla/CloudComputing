@@ -49,8 +49,8 @@ export class Chatroom{
   pushUser(user: User){
     this.users.push(user);
   }
-  popUser(user: User){
-    this.users.splice(this.users.findIndex((u: User)=>{return user.equals(u)}), 1);
+  popUser(user: string){
+    this.users.splice(this.users.findIndex((u: User)=>{return u != null && u.equals(user)}), 1);
   }
   findUserById(id: string){
     let index = this.users.findIndex((u: User) => {return u.id == id});
@@ -67,8 +67,8 @@ export class User {
     this.id = id;
   }
 
-  equals(user: User){
-    return user.id == this.id;
+  equals(id: string){
+    return id == this.id;
   }
 }
 
@@ -89,6 +89,10 @@ export class ChatComponent implements OnInit {
   public chatrooms: any = {'global': new Chatroom('global', 'global','group', true )};
 
   constructor(private socketService: SocketService, private toneAnalyzer: ToneAnalyzerService) {
+    this.socketService._socket.on('user connected', (user, id) => {
+      this.chatrooms.global.pushUser(new User(user, id));
+      this.sendAlert('user ' + user + ' connected', true);
+    });
     this.socketService._socket.on('connected users', (users) => {
       users.map((user) => {this.chatrooms.global.pushUser(user)});
     });
@@ -111,10 +115,6 @@ export class ChatComponent implements OnInit {
       }
       this.chatrooms[msg.sender].pushMessage(message);
     });
-    this.socketService._socket.on('user connected', (user, id) => {
-      this.chatrooms.global.pushUser(new User(user, id));
-      this.sendAlert('user ' + user + ' connected', true);
-    });
     this.socketService._socket.on('group created', (name, userId) => {
       this.chatrooms[name] = new Chatroom(name, name, 'group', false);
       this.chatrooms[name].pushUser(this.chatrooms['global'].findUserById(userId));
@@ -123,8 +123,10 @@ export class ChatComponent implements OnInit {
       this.chatrooms[name].pushUser(this.chatrooms['global'].findUserById(userId));
     });
     this.socketService._socket.on('user disconnected', (user, id) => {
-      this.chatrooms.global.popUser(new User(user, id));
       this.sendAlert('user ' + user + ' disconnected', false)
+      for (let chatroom in this.chatrooms) {
+        this.chatrooms[chatroom].popUser(id);
+      };
     });
   }
 

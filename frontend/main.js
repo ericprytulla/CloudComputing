@@ -262,7 +262,7 @@ var Chatroom = /** @class */ (function () {
         this.users.push(user);
     };
     Chatroom.prototype.popUser = function (user) {
-        this.users.splice(this.users.findIndex(function (u) { return user.equals(u); }), 1);
+        this.users.splice(this.users.findIndex(function (u) { return u != null && u.equals(user); }), 1);
     };
     Chatroom.prototype.findUserById = function (id) {
         var index = this.users.findIndex(function (u) { return u.id == id; });
@@ -276,8 +276,8 @@ var User = /** @class */ (function () {
         this.name = name;
         this.id = id;
     }
-    User.prototype.equals = function (user) {
-        return user.id == this.id;
+    User.prototype.equals = function (id) {
+        return id == this.id;
     };
     return User;
 }());
@@ -292,6 +292,10 @@ var ChatComponent = /** @class */ (function () {
         this.typeFile = false;
         this.moods = ['Red', 'OrangeRed', 'Coral', 'Orange', 'Gold', 'Yellow', 'GreenYellow', 'Lawngreen', 'YellowGreen', 'LimeGreen', 'Green'];
         this.chatrooms = { 'global': new Chatroom('global', 'global', 'group', true) };
+        this.socketService._socket.on('user connected', function (user, id) {
+            _this.chatrooms.global.pushUser(new User(user, id));
+            _this.sendAlert('user ' + user + ' connected', true);
+        });
         this.socketService._socket.on('connected users', function (users) {
             users.map(function (user) { _this.chatrooms.global.pushUser(user); });
         });
@@ -314,10 +318,6 @@ var ChatComponent = /** @class */ (function () {
             }
             _this.chatrooms[msg.sender].pushMessage(message);
         });
-        this.socketService._socket.on('user connected', function (user, id) {
-            _this.chatrooms.global.pushUser(new User(user, id));
-            _this.sendAlert('user ' + user + ' connected', true);
-        });
         this.socketService._socket.on('group created', function (name, userId) {
             _this.chatrooms[name] = new Chatroom(name, name, 'group', false);
             _this.chatrooms[name].pushUser(_this.chatrooms['global'].findUserById(userId));
@@ -326,8 +326,11 @@ var ChatComponent = /** @class */ (function () {
             _this.chatrooms[name].pushUser(_this.chatrooms['global'].findUserById(userId));
         });
         this.socketService._socket.on('user disconnected', function (user, id) {
-            _this.chatrooms.global.popUser(new User(user, id));
             _this.sendAlert('user ' + user + ' disconnected', false);
+            for (var chatroom in _this.chatrooms) {
+                _this.chatrooms[chatroom].popUser(id);
+            }
+            ;
         });
     }
     ChatComponent.prototype.ngOnInit = function () {
@@ -564,7 +567,7 @@ var SocketService = /** @class */ (function () {
         configurable: true
     });
     SocketService.prototype.connect = function (username) {
-        this.socket = socket_io_client__WEBPACK_IMPORTED_MODULE_2__({ query: { username: username } });
+        this.socket = socket_io_client__WEBPACK_IMPORTED_MODULE_2__('localhost:3000', { query: { username: username } });
         this.socket.connect();
         this.connected = true;
     };
