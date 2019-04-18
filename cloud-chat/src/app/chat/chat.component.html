@@ -17,8 +17,8 @@
     <div id="messages">
       <div [ngClass]="{'positive':positive, 'negative': !positive, 'active': alertMessage}" class="alert" ><span>{{alertMessage}}</span></div>
       <div class="message-wrapper" *ngFor="let msg of chatrooms[selected].messages">
-        <div *ngIf="msg.sender" class="message-sender">{{chatrooms['global'].findUserById(msg.sender).name}}:</div>
-        <div [ngClass]="msg.sender?'message':'message-personal'" class="message-personal">
+        <div *ngIf="msg.senderId" class="message-sender">{{msg.senderName}}:</div>
+        <div [ngClass]="msg.senderId?'message':'message-personal'" class="message-personal">
           <div class="message-text">{{msg.message}}</div>
           <div *ngIf="msg.media">
             <img *ngIf="msg.media.split(':')[1].split('/')[0] == 'image'" [src]="msg.media" width="500px" alt="">

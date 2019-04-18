@@ -189,7 +189,7 @@ var AppModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div id=\"chat-component-wrapper\" [style.background-color]=\"ConservationMood\">\n  <div id=\"chat-rooms-selector\">\n    <div *ngFor=\"let room of chatrooms | keyvalue\" class=\"chat-room-selector\" (click)=\"selected = room.key\">\n      <div class=\"centered-text\" [ngClass]=\"room.key==selected?'selected-room':''\">{{room.value.name}}</div>\n    </div>\n    <button id=\"add-group\" (click)=\"onClickCreateGroup()\">\n      +\n    </button>\n  </div>\n  <div id=\"chat-room\">\n    <div id=\"header\">\n      <p>\n        <span *ngIf=\"chatrooms[selected].isMember\">You</span>\n        <span *ngFor=\"let user of chatrooms[selected].users\" (click)=\"onClickPrivateMessage(user)\" class=\"clickable\">, {{user.name}}</span>\n      </p>\n    </div>\n    <div id=\"messages\">\n      <div [ngClass]=\"{'positive':positive, 'negative': !positive, 'active': alertMessage}\" class=\"alert\" ><span>{{alertMessage}}</span></div>\n      <div class=\"message-wrapper\" *ngFor=\"let msg of chatrooms[selected].messages\">\n        <div *ngIf=\"msg.sender\" class=\"message-sender\">{{chatrooms['global'].findUserById(msg.sender).name}}:</div>\n        <div [ngClass]=\"msg.sender?'message':'message-personal'\" class=\"message-personal\">\n          <div class=\"message-text\">{{msg.message}}</div>\n          <div *ngIf=\"msg.media\">\n            <img *ngIf=\"msg.media.split(':')[1].split('/')[0] == 'image'\" [src]=\"msg.media\" width=\"500px\" alt=\"\">\n            <video *ngIf=\"msg.media.split(':')[1].split('/')[0] == 'video'\" [src]=\"msg.media\" width=\"500px\"></video>\n            <audio *ngIf=\"msg.media.split(':')[1].split('/')[0] == 'audio'\" [src]=\"msg.media\" width=\"500px\"></audio>\n          </div>\n          <div class=\"message-mood\">{{msg.mood}}</div>\n          <div class=\"message-timestamp\">{{msg.timeStampString}}</div>\n        </div>\n      </div>\n    </div>\n    <button *ngIf=\"!chatrooms[selected].isMember\" id=\"join-chat\" (click)=\"onClickJoinGroup()\">JOIN CHAT</button>\n    <form *ngIf=\"chatrooms[selected].isMember\" (ngSubmit)=\"onClickSend()\">\n      <input *ngIf=\"typeFile\" type=\"file\" single (change)=\"onFileSelect($event)\">\n      <input *ngIf=\"!typeFile\" name=\"message\" id=\"m\" autocomplete=\"off\" [(ngModel)]=\"message\"/>\n      <button class=\"button\">Send</button>\n      <button class=\"button\" (click)=\"switchMode($event)\">Modus</button>\n    </form>\n  </div>\n</div>\n"
+module.exports = "<div id=\"chat-component-wrapper\" [style.background-color]=\"ConservationMood\">\n  <div id=\"chat-rooms-selector\">\n    <div *ngFor=\"let room of chatrooms | keyvalue\" class=\"chat-room-selector\" (click)=\"selected = room.key\">\n      <div class=\"centered-text\" [ngClass]=\"room.key==selected?'selected-room':''\">{{room.value.name}}</div>\n    </div>\n    <button id=\"add-group\" (click)=\"onClickCreateGroup()\">\n      +\n    </button>\n  </div>\n  <div id=\"chat-room\">\n    <div id=\"header\">\n      <p>\n        <span *ngIf=\"chatrooms[selected].isMember\">You</span>\n        <span *ngFor=\"let user of chatrooms[selected].users\" (click)=\"onClickPrivateMessage(user)\" class=\"clickable\">, {{user.name}}</span>\n      </p>\n    </div>\n    <div id=\"messages\">\n      <div [ngClass]=\"{'positive':positive, 'negative': !positive, 'active': alertMessage}\" class=\"alert\" ><span>{{alertMessage}}</span></div>\n      <div class=\"message-wrapper\" *ngFor=\"let msg of chatrooms[selected].messages\">\n        <div *ngIf=\"msg.senderId\" class=\"message-sender\">{{msg.senderName}}:</div>\n        <div [ngClass]=\"msg.senderId?'message':'message-personal'\" class=\"message-personal\">\n          <div class=\"message-text\">{{msg.message}}</div>\n          <div *ngIf=\"msg.media\">\n            <img *ngIf=\"msg.media.split(':')[1].split('/')[0] == 'image'\" [src]=\"msg.media\" width=\"500px\" alt=\"\">\n            <video *ngIf=\"msg.media.split(':')[1].split('/')[0] == 'video'\" [src]=\"msg.media\" width=\"500px\"></video>\n            <audio *ngIf=\"msg.media.split(':')[1].split('/')[0] == 'audio'\" [src]=\"msg.media\" width=\"500px\"></audio>\n          </div>\n          <div class=\"message-mood\">{{msg.mood}}</div>\n          <div class=\"message-timestamp\">{{msg.timeStampString}}</div>\n        </div>\n      </div>\n    </div>\n    <button *ngIf=\"!chatrooms[selected].isMember\" id=\"join-chat\" (click)=\"onClickJoinGroup()\">JOIN CHAT</button>\n    <form *ngIf=\"chatrooms[selected].isMember\" (ngSubmit)=\"onClickSend()\">\n      <input *ngIf=\"typeFile\" type=\"file\" single (change)=\"onFileSelect($event)\">\n      <input *ngIf=\"!typeFile\" name=\"message\" id=\"m\" autocomplete=\"off\" [(ngModel)]=\"message\"/>\n      <button class=\"button\">Send</button>\n      <button class=\"button\" (click)=\"switchMode($event)\">Modus</button>\n    </form>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -226,9 +226,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var Message = /** @class */ (function () {
-    function Message(message, media, to, timeStamp, type, mood, sender) {
+    function Message(message, media, to, timeStamp, type, mood, senderId, senderName) {
         this.message = message;
-        this.sender = sender;
+        this.senderId = senderId;
+        this.senderName = senderName;
         this.to = to;
         this.timeStamp = timeStamp;
         this.type = type;
@@ -307,16 +308,16 @@ var ChatComponent = /** @class */ (function () {
         });
         this.socketService._socket.on('group message', function (msg) {
             _this.toneAnalyzer.moodify(msg.mood.mood);
-            _this.chatrooms[msg.to].pushMessage(new Message(msg.message, msg.media, msg.to, new Date(msg.timeStamp), msg.type, msg.mood.mood, msg.sender));
+            _this.chatrooms[msg.to].pushMessage(new Message(msg.message, msg.media, msg.to, new Date(msg.timeStamp), msg.type, msg.mood.mood, msg.senderId, msg.senderName));
         });
         this.socketService._socket.on('personal message', function (msg) {
-            var message = new Message(msg.message, msg.file, msg.to, new Date(msg.timeStamp), msg.type, msg.mood.mood, msg.sender);
+            var message = new Message(msg.message, msg.file, msg.to, new Date(msg.timeStamp), msg.type, msg.mood.mood, msg.senderId, msg.senderName);
             _this.toneAnalyzer.moodify(msg.mood.mood);
-            if (!_this.chatrooms[msg.sender]) {
-                _this.chatrooms[msg.sender] = new Chatroom(_this.chatrooms['global'].findUserById(msg.sender).name, msg.sender, 'personal', true);
-                _this.chatrooms[msg.sender].pushUser(_this.chatrooms['global'].findUserById(msg.sender));
+            if (!_this.chatrooms[msg.senderId]) {
+                _this.chatrooms[msg.senderId] = new Chatroom(msg.senderName, msg.senderId, 'personal', true);
+                _this.chatrooms[msg.senderId].pushUser(_this.chatrooms['global'].findUserById(msg.senderId));
             }
-            _this.chatrooms[msg.sender].pushMessage(message);
+            _this.chatrooms[msg.senderId].pushMessage(message);
         });
         this.socketService._socket.on('group created', function (name, userId) {
             _this.chatrooms[name] = new Chatroom(name, name, 'group', false);

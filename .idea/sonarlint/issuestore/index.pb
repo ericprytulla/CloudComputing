@@ -44,3 +44,7 @@ G
 +cloud-chat/src/app/login/login.component.ts,4\9\493b7b34a29c504c385482737dfd022eba63b4fe
 d
 4cloud-chat/src/app/services/tone-analyzer.service.ts,8\6\862eecf138b3026cff233193110d0b850a6d8628
+4
+.env,3\c\3c84dcdc6bbe3d7817c49dcdc327b926fea1808a
+<
+manifest.yml,2\4\24859e6ddc41947e69f551c4e9ae37e6f72faafa

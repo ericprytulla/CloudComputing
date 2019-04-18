@@ -26,7 +26,8 @@ io.on('connection', function(socket){
     socket.emit('existing groups', groups);
     users.push({id: socket.id, name: socket.username});
     socket.on('chat message', function(msg){
-        msg.sender = socket.id;
+        msg.senderId = socket.id;
+        msg.senderName = socket.username;
         getTone(msg.message).then(mood => {
             msg.mood = mood;
             if (msg.to == "global"){
