@@ -15,6 +15,14 @@ const html = __dirname + '/frontend';
 app.use(cors());
 app.use(express.static(html));
 app.use(bodyParser.json());
+app.use (function (req, res, next) {
+    if (req.secure || process.env.BLUEMIX_REGION === undefined) {
+        next();
+    } else {
+        console.log('redirecting to https');
+        res.redirect('https://' + req.headers.host + req.url);
+    }
+});
 
 
 io.on('connection', function(socket){
