@@ -7,11 +7,65 @@ $redFire: rgba(244, 91, 105, 1);
 $fontAsap: 'Asap', sans-serif;
 
 
+#image-selector-wrapper {
+  cursor: pointer!important;
+  position: relative;
+  margin: 0;
+  margin-bottom: 20px!important;
+  float: left;
+  overflow: hidden;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: rgba($blueQueen, 0.5);
+}
+
+#default-text {
+  postion: absolute;
+  margin-top: 50%;
+  margin-left: 50%;
+  width: auto;
+  height: auto;
+  text-align: center;
+  font-size: small;
+  transform: translate(-50%, -50%);
+}
+
+#image-selector-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+#image-selector-input {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  height: calc(100% + 40px);
+  width: 100%;
+}
+
+#language-selector {
+  position: relative;
+  float: left;
+  margin-left: 50px;
+  margin-top: 35px;
+}
+
+#lang {
+  min-width: 200px;
+  border: 1px solid rgba($blueQueen, 1);
+  height: 30px;
+  border-radius: 15px;
+}
+
 
 .login {
   overflow: hidden;
   background-color: white;
-  padding: 40px 30px 30px 30px;
+  padding: 30px;
   border-radius: 10px;
   position: absolute;
   top: 50%;
@@ -34,15 +88,13 @@ $fontAsap: 'Asap', sans-serif;
   }
 
   &::before {
-    left: 40%;
-    bottom: -130%;
+
     background-color: rgba($blueQueen, 0.15);
     animation: wawes 6s infinite linear;
   }
 
   &::after {
-    left: 35%;
-    bottom: -125%;
+    top: -50px;
     background-color: rgba($greenSeaweed, 0.2);
     animation: wawes 7s infinite;
   }
@@ -62,31 +114,43 @@ $fontAsap: 'Asap', sans-serif;
     border: 1px solid #c00 !important;
   }
 
+}
 
+.button {
+  font-family: $fontAsap;
+  cursor: pointer;
+  color: #fff;
+  font-size: 16px;
+  text-transform: uppercase;
+  width: auto;
+  border: 0;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: $redFire;
+  transition: background-color 300ms;
 
-  > button {
-    font-family: $fontAsap;
-    cursor: pointer;
-    color: #fff;
-    font-size: 16px;
-    text-transform: uppercase;
-    width: 80px;
-    border: 0;
-    padding: 10px 0;
-    margin-top: 10px;
-    margin-left: -5px;
-    border-radius: 5px;
-    background-color: $redFire;
-    transition: background-color 300ms;
-
-    &:hover {
-      background-color: darken($redFire, 5%);
-    }
+  &:hover {
+    background-color: darken($redFire, 5%);
   }
 }
 
 @keyframes wawes {
   from { transform: rotate(0); }
   to { transform: rotate(360deg); }
+}
+
+.registered_wrapper {
+  background: #fff;
+  border-radius: 5px;
+  padding: 10px;
+  position: absolute;
+  top:70%;
+  left: 50%;
+  width: 400px;
+  transform: translate(-50%, 0);
+
+  > label {
+    margin-right: 10px;
+  }
 }
 

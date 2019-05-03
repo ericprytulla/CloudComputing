@@ -17,8 +17,17 @@ export class SocketService {
     return this.connected;
   }
 
-  login(username: string) {
-    this.connect(username);
+  login(username, password: string) {
+    this.socket = io('localhost:3000',{ query: {username: username, password: password}});
+    this.socket.connect();
+    this.connected = true;
+    this.router.navigate(["/chat"]);
+  }
+
+  register(username, password: string, image: string | ArrayBuffer, prefered_language: string) {
+    this.socket = io('localhost:3000',{ query: {username: username, password: password}});
+    this.socket.connect();
+    this.connected = true;
     this.router.navigate(["/chat"]);
   }
 
@@ -36,11 +45,5 @@ export class SocketService {
 
   get _socket(){
     return this.socket;
-  }
-
-  private connect(username: string) {
-    this.socket = io({ query: {username: username}});
-    this.socket.connect();
-    this.connected = true;
   }
 }
