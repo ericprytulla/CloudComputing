@@ -10,7 +10,7 @@ export class LoginComponent implements OnInit {
 
   username: string = null;
   password: string = null;
-  password_repeat: string = null;
+  repeat_password: string = null;
   prefered_language: string = 'german';
   image: string | ArrayBuffer = null;
   required: boolean = false;
@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit {
   }
 
   onClickRegister(){
-    if (this.username && this.username.length > 1 && this.username.length < 10 && this.password === this.password_repeat){
+    if (this.username && this.username.length > 1 && this.username.length < 10 && this.password === this.repeat_password){
       this.socketService.register(this.username, this.password, this.image, this.prefered_language);
     } else {
       this.required = true;

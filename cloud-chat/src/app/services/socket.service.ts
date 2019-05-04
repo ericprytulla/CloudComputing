@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
 import {Router} from "@angular/router";
 import {Message} from "../chat/chat.component";
+import {HttpClient} from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'
@@ -10,25 +11,28 @@ export class SocketService {
 
   private socket;
   private connected: boolean;
+  //private proxy_url: string = 'http://localhost:3000';
+  private proxy_url: string = '';
 
-  constructor( private router: Router) { }
+  constructor( private router: Router, private http: HttpClient) { }
 
   isConnected(){
     return this.connected;
   }
 
   login(username, password: string) {
-    this.socket = io('localhost:3000',{ query: {username: username, password: password}});
+    this.socket = io(this.proxy_url,{ query: {username: username, password: password}});
     this.socket.connect();
     this.connected = true;
     this.router.navigate(["/chat"]);
   }
 
   register(username, password: string, image: string | ArrayBuffer, prefered_language: string) {
-    this.socket = io('localhost:3000',{ query: {username: username, password: password}});
-    this.socket.connect();
+    this.http.put(this.proxy_url +'/user', {username: username, password: password, image: image, prefered_language: prefered_language}).subscribe((res: any) => {
+      console.log(res);
+    });
     this.connected = true;
-    this.router.navigate(["/chat"]);
+   // this.router.navigate(["/chat"]);
   }
 
   sendMessage(message: Message){

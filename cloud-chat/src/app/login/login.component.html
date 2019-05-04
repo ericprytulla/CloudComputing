@@ -16,8 +16,8 @@
     </select>
   </div>
   <input [ngClass]="required?'required':''" name="username" type="text" placeholder="Username" [(ngModel)]="username">
-  <input [ngClass]="required?'required':''" name="password" type="text" placeholder="Password" [(ngModel)]="password">
-  <input [ngClass]="required?'required':''" name="repeat_password" type="text" placeholder="Repeat Password" [(ngModel)]="repeat_password">
+  <input [ngClass]="required?'required':''" name="password" type="password" placeholder="Password" [(ngModel)]="password">
+  <input [ngClass]="required?'required':''" name="repeat_password" type="password" placeholder="Repeat Password" [(ngModel)]="repeat_password">
   <button class="button">Register</button>
 </form>
 <div *ngIf="login" class="registered_wrapper">

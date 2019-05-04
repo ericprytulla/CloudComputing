@@ -37,14 +37,18 @@ io.on('connection', function(socket){
     socket.on('chat message', function(msg){
         msg.senderId = socket.id;
         msg.senderName = socket.username;
-        getTone(msg.message).then(mood => {
-            msg.mood = mood;
-            if (msg.to == "global"){
-                socket.broadcast.emit('group message', msg);
-            } else {
-                socket.broadcast.to(msg.to).emit(msg.type + ' message', msg);
-            }
+        getTranslation(msg.message).then((result) => {
+            msg.message = result;
+            getTone(msg.message).then(mood => {
+                msg.mood = mood;
+                if (msg.to == "global"){
+                    socket.broadcast.emit('group message', msg);
+                } else {
+                    socket.broadcast.to(msg.to).emit(msg.type + ' message', msg);
+                }
+            });
         });
+
 
     });
     socket.on('disconnect', function(){
@@ -87,6 +91,63 @@ function getTone(message){
     });
 };
 
+app.route('/user')
+    .get()
+    .post()
+    .delete()
+    .put(function(req, res){
+    console.log(req);
+    res.send('');
+});
+
+
+
+const LanguageTranslatorV3 = require('watson-developer-cloud/language-translator/v3');
+
+const languageTranslator = new LanguageTranslatorV3({
+    version: '2019-04-02',
+    iam_apikey: 'ZzYTYVQ5lAXy3dv0J1um76VW0KVoxbZlZUe5nZpaloHJ',
+    url: 'https://gateway-fra.watsonplatform.net/language-translator/api',
+});
+
+function getTranslation(msg){
+    return new Promise(resolve => {
+        languageTranslator.identify({text: msg})
+            .then(identifiedLanguages => {
+                console.log(JSON.stringify(identifiedLanguages, null, 2));
+                let targetLanguage = 'en';
+                let sourcelanguage = identifiedLanguages.languages[0].language;
+                if (sourcelanguage !== targetLanguage){
+                    languageTranslator.translate({source: sourcelanguage, target: targetLanguage, text: msg})
+                        .then(translationResult => {
+                            let translation = "";
+                            translationResult.translations.forEach(elem=>{
+                                translation += elem.translation + " ";
+                            });
+                            resolve(translation);
+                            console.log(JSON.stringify(translationResult, null, 2));
+                        })
+                        .catch(err => {
+                            console.log('error:', err);
+                        });
+                } else {
+                    resolve(msg);
+                }
+
+            })
+            .catch(err => {
+                console.log('error:', err);
+            });
+    });
+}
+
+
+
+
+
+
 http.listen(port, function(){
     console.log('listening on  *:' + port);
 });
+
+

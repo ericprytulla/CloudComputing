@@ -459,7 +459,7 @@ var AuthGuard = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<form *ngIf=\"login\" class=\"login\" (ngSubmit)=\"onClickLogin()\">\n  <input [ngClass]=\"required?'required':''\" name=\"username\" type=\"text\" placeholder=\"Username\" [(ngModel)]=\"username\">\n  <input [ngClass]=\"required?'required':''\" name=\"password\" type=\"text\" placeholder=\"Password\" [(ngModel)]=\"password\">\n  <button class=\"button\">Login</button>\n</form>\n<form *ngIf=\"!login\" class=\"login\" (ngSubmit)=\"onClickRegister()\">\n  <div id=\"image-selector-wrapper\">\n    <div id=\"default-text\">Bild auswählen</div>\n    <img id=\"image-selector-image\" [src]=\"image\" alt=\"\">\n    <input id=\"image-selector-input\" type=\"file\" single (change)=\"onFileSelect($event)\" accept=\"image/png, image/jpeg\">\n  </div>\n  <div id=\"language-selector\">\n    <select name=\"lang\" id=\"lang\" [ngModel]=\"prefered_language\">\n      <option value=\"german\">Deutsch</option>\n      <option value=\"english\">English</option>\n    </select>\n  </div>\n  <input [ngClass]=\"required?'required':''\" name=\"username\" type=\"text\" placeholder=\"Username\" [(ngModel)]=\"username\">\n  <input [ngClass]=\"required?'required':''\" name=\"password\" type=\"text\" placeholder=\"Password\" [(ngModel)]=\"password\">\n  <input [ngClass]=\"required?'required':''\" name=\"repeat_password\" type=\"text\" placeholder=\"Repeat Password\" [(ngModel)]=\"repeat_password\">\n  <button class=\"button\">Register</button>\n</form>\n<div *ngIf=\"login\" class=\"registered_wrapper\">\n  <label for=\"not_registered\">Not registered yet?</label>\n  <button class=\"button\" id=\"not_registered\" (click)=\"login=false\">Register now!</button>\n</div>\n<div *ngIf=\"!login\" class=\"registered_wrapper\">\n  <label for=\"registered\">Already registered?</label>\n  <button class=\"button\" id=\"registered\" (click)=\"login=true\">Login now!</button>\n</div>\n"
+module.exports = "<form *ngIf=\"login\" class=\"login\" (ngSubmit)=\"onClickLogin()\">\n  <input [ngClass]=\"required?'required':''\" name=\"username\" type=\"text\" placeholder=\"Username\" [(ngModel)]=\"username\">\n  <input [ngClass]=\"required?'required':''\" name=\"password\" type=\"text\" placeholder=\"Password\" [(ngModel)]=\"password\">\n  <button class=\"button\">Login</button>\n</form>\n<form *ngIf=\"!login\" class=\"login\" (ngSubmit)=\"onClickRegister()\">\n  <div id=\"image-selector-wrapper\">\n    <div id=\"default-text\">Bild auswählen</div>\n    <img id=\"image-selector-image\" [src]=\"image\" alt=\"\">\n    <input id=\"image-selector-input\" type=\"file\" single (change)=\"onFileSelect($event)\" accept=\"image/png, image/jpeg\">\n  </div>\n  <div id=\"language-selector\">\n    <select name=\"lang\" id=\"lang\" [ngModel]=\"prefered_language\">\n      <option value=\"german\">Deutsch</option>\n      <option value=\"english\">English</option>\n    </select>\n  </div>\n  <input [ngClass]=\"required?'required':''\" name=\"username\" type=\"text\" placeholder=\"Username\" [(ngModel)]=\"username\">\n  <input [ngClass]=\"required?'required':''\" name=\"password\" type=\"password\" placeholder=\"Password\" [(ngModel)]=\"password\">\n  <input [ngClass]=\"required?'required':''\" name=\"repeat_password\" type=\"password\" placeholder=\"Repeat Password\" [(ngModel)]=\"repeat_password\">\n  <button class=\"button\">Register</button>\n</form>\n<div *ngIf=\"login\" class=\"registered_wrapper\">\n  <label for=\"not_registered\">Not registered yet?</label>\n  <button class=\"button\" id=\"not_registered\" (click)=\"login=false\">Register now!</button>\n</div>\n<div *ngIf=\"!login\" class=\"registered_wrapper\">\n  <label for=\"registered\">Already registered?</label>\n  <button class=\"button\" id=\"registered\" (click)=\"login=true\">Login now!</button>\n</div>\n"
 
 /***/ }),
 
@@ -495,7 +495,7 @@ var LoginComponent = /** @class */ (function () {
         this.socketService = socketService;
         this.username = null;
         this.password = null;
-        this.password_repeat = null;
+        this.repeat_password = null;
         this.prefered_language = 'german';
         this.image = null;
         this.required = false;
@@ -520,7 +520,7 @@ var LoginComponent = /** @class */ (function () {
         this.required = true;
     };
     LoginComponent.prototype.onClickRegister = function () {
-        if (this.username && this.username.length > 1 && this.username.length < 10 && this.password === this.password_repeat) {
+        if (this.username && this.username.length > 1 && this.username.length < 10 && this.password === this.repeat_password) {
             this.socketService.register(this.username, this.password, this.image, this.prefered_language);
         }
         else {
@@ -557,28 +557,34 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.io-client/lib/index.js");
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(socket_io_client__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
+/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
+
 
 
 
 
 var SocketService = /** @class */ (function () {
-    function SocketService(router) {
+    function SocketService(router, http) {
         this.router = router;
+        this.http = http;
+        //private proxy_url: string = 'http://localhost:3000';
+        this.proxy_url = '';
     }
     SocketService.prototype.isConnected = function () {
         return this.connected;
     };
     SocketService.prototype.login = function (username, password) {
-        this.socket = socket_io_client__WEBPACK_IMPORTED_MODULE_2__({ query: { username: username, password: password } });
+        this.socket = socket_io_client__WEBPACK_IMPORTED_MODULE_2__(this.proxy_url, { query: { username: username, password: password } });
         this.socket.connect();
         this.connected = true;
         this.router.navigate(["/chat"]);
     };
     SocketService.prototype.register = function (username, password, image, prefered_language) {
-        this.socket = socket_io_client__WEBPACK_IMPORTED_MODULE_2__({ query: { username: username, password: password } });
-        this.socket.connect();
+        this.http.put(this.proxy_url + '/user', { username: username, password: password, image: image, prefered_language: prefered_language }).subscribe(function (res) {
+            console.log(res);
+        });
         this.connected = true;
-        this.router.navigate(["/chat"]);
+        // this.router.navigate(["/chat"]);
     };
     SocketService.prototype.sendMessage = function (message) {
         this.socket.emit('chat message', message);
@@ -600,7 +606,7 @@ var SocketService = /** @class */ (function () {
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
             providedIn: 'root'
         }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_router__WEBPACK_IMPORTED_MODULE_3__["Router"]])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_router__WEBPACK_IMPORTED_MODULE_3__["Router"], _angular_common_http__WEBPACK_IMPORTED_MODULE_4__["HttpClient"]])
     ], SocketService);
     return SocketService;
 }());
