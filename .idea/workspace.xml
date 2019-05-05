@@ -2,13 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="71b6e0c3-cc89-4d34-ba98-c2724c0323f0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cloud-chat/src/app/chat/chat.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/cloud-chat/src/app/chat/chat.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cloud-chat/src/app/login/login.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/cloud-chat/src/app/login/login.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cloud-chat/src/app/login/login.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/cloud-chat/src/app/login/login.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cloud-chat/src/app/services/socket.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/cloud-chat/src/app/services/socket.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/main.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/main.js.map" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -46,11 +39,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="799">
-              <caret line="47" column="59" lean-forward="true" selection-start-line="47" selection-start-column="59" selection-end-line="47" selection-end-column="59" />
+            <state relative-caret-position="425">
+              <caret line="25" column="6" lean-forward="true" selection-start-line="25" selection-start-column="6" selection-end-line="25" selection-end-column="6" />
             </state>
           </provider>
         </entry>
@@ -59,7 +52,7 @@
         <entry file="file://$PROJECT_DIR$/.env">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="34">
-              <caret line="2" column="13" lean-forward="true" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="62" />
+              <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="62" />
             </state>
           </provider>
         </entry>
@@ -76,11 +69,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cloud-chat/src/app/services/socket.service.ts">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="238">
-              <caret line="14" column="33" lean-forward="true" selection-start-line="14" selection-start-column="33" selection-end-line="14" selection-end-column="33" />
+              <caret line="14" column="33" selection-start-line="14" selection-start-column="33" selection-end-line="14" selection-end-column="33" />
               <folding>
                 <element signature="e#0#43#0" expanded="true" />
               </folding>
@@ -92,7 +85,7 @@
         <entry file="file://$PROJECT_DIR$/cloud-chat/src/app/login/login.component.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="170">
-              <caret line="10" column="8" lean-forward="true" selection-start-line="10" selection-start-column="8" selection-end-line="10" selection-end-column="8" />
+              <caret line="10" column="8" selection-start-line="10" selection-start-column="8" selection-end-line="10" selection-end-column="8" />
             </state>
           </provider>
         </entry>
@@ -101,7 +94,7 @@
         <entry file="file://$PROJECT_DIR$/cloud-chat/src/app/login/login.component.scss">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="221">
-              <caret line="57" column="19" lean-forward="true" selection-start-line="57" selection-start-column="19" selection-end-line="57" selection-end-column="19" />
+              <caret line="57" column="19" selection-start-line="57" selection-start-column="19" selection-end-line="57" selection-end-column="19" />
             </state>
           </provider>
         </entry>
@@ -110,7 +103,7 @@
         <entry file="file://$PROJECT_DIR$/cloud-chat/src/app/login/login.component.ts">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="197">
-              <caret line="29" column="14" lean-forward="true" selection-start-line="29" selection-start-column="14" selection-end-line="29" selection-end-column="14" />
+              <caret line="29" column="14" selection-start-line="29" selection-start-column="14" selection-end-line="29" selection-end-column="14" />
               <folding>
                 <element signature="e#0#50#0" expanded="true" />
               </folding>
@@ -188,8 +181,8 @@
         <option value="$PROJECT_DIR$/cloud-chat/src/app/chat/chat.component.ts" />
         <option value="$PROJECT_DIR$/cloud-chat/src/app/login/login.component.html" />
         <option value="$PROJECT_DIR$/cloud-chat/src/app/login/login.component.ts" />
-        <option value="$PROJECT_DIR$/index.js" />
         <option value="$PROJECT_DIR$/cloud-chat/src/app/services/socket.service.ts" />
+        <option value="$PROJECT_DIR$/index.js" />
       </list>
     </option>
   </component>
@@ -297,7 +290,7 @@
       <workItem from="1556523718143" duration="864000" />
       <workItem from="1556784046503" duration="5412000" />
       <workItem from="1556869242223" duration="11000" />
-      <workItem from="1556905244115" duration="37336000" />
+      <workItem from="1556905244115" duration="37960000" />
     </task>
     <task id="LOCAL-00001" summary="Implemented socket.io tutorial">
       <created>1553087774675</created>
@@ -310,7 +303,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="209459000" />
+    <option name="totallyTimeSpent" value="210083000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-6" y="-6" width="1867" height="1093" extended-state="6" />
@@ -552,7 +545,7 @@
     <entry file="file://$PROJECT_DIR$/.env">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
-          <caret line="2" column="13" lean-forward="true" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="62" />
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="62" />
         </state>
       </provider>
     </entry>
@@ -569,7 +562,7 @@
     <entry file="file://$PROJECT_DIR$/cloud-chat/src/app/login/login.component.scss">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
-          <caret line="57" column="19" lean-forward="true" selection-start-line="57" selection-start-column="19" selection-end-line="57" selection-end-column="19" />
+          <caret line="57" column="19" selection-start-line="57" selection-start-column="19" selection-end-line="57" selection-end-column="19" />
         </state>
       </provider>
     </entry>
@@ -586,7 +579,7 @@
     <entry file="file://$PROJECT_DIR$/cloud-chat/src/app/login/login.component.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="197">
-          <caret line="29" column="14" lean-forward="true" selection-start-line="29" selection-start-column="14" selection-end-line="29" selection-end-column="14" />
+          <caret line="29" column="14" selection-start-line="29" selection-start-column="14" selection-end-line="29" selection-end-column="14" />
           <folding>
             <element signature="e#0#50#0" expanded="true" />
           </folding>
@@ -596,14 +589,7 @@
     <entry file="file://$PROJECT_DIR$/cloud-chat/src/app/login/login.component.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
-          <caret line="10" column="8" lean-forward="true" selection-start-line="10" selection-start-column="8" selection-end-line="10" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="799">
-          <caret line="47" column="59" lean-forward="true" selection-start-line="47" selection-start-column="59" selection-end-line="47" selection-end-column="59" />
+          <caret line="10" column="8" selection-start-line="10" selection-start-column="8" selection-end-line="10" selection-end-column="8" />
         </state>
       </provider>
     </entry>
@@ -617,10 +603,17 @@
     <entry file="file://$PROJECT_DIR$/cloud-chat/src/app/services/socket.service.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="238">
-          <caret line="14" column="33" lean-forward="true" selection-start-line="14" selection-start-column="33" selection-end-line="14" selection-end-column="33" />
+          <caret line="14" column="33" selection-start-line="14" selection-start-column="33" selection-end-line="14" selection-end-column="33" />
           <folding>
             <element signature="e#0#43#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="25" column="6" lean-forward="true" selection-start-line="25" selection-start-column="6" selection-end-line="25" selection-end-column="6" />
         </state>
       </provider>
     </entry>
