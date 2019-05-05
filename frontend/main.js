@@ -331,7 +331,6 @@ var ChatComponent = /** @class */ (function () {
             for (var chatroom in _this.chatrooms) {
                 _this.chatrooms[chatroom].popUser(id);
             }
-            ;
         });
     }
     ChatComponent.prototype.ngOnInit = function () {
@@ -459,7 +458,7 @@ var AuthGuard = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<form *ngIf=\"login\" class=\"login\" (ngSubmit)=\"onClickLogin()\">\n  <input [ngClass]=\"required?'required':''\" name=\"username\" type=\"text\" placeholder=\"Username\" [(ngModel)]=\"username\">\n  <input [ngClass]=\"required?'required':''\" name=\"password\" type=\"text\" placeholder=\"Password\" [(ngModel)]=\"password\">\n  <button class=\"button\">Login</button>\n</form>\n<form *ngIf=\"!login\" class=\"login\" (ngSubmit)=\"onClickRegister()\">\n  <div id=\"image-selector-wrapper\">\n    <div id=\"default-text\">Bild auswählen</div>\n    <img id=\"image-selector-image\" [src]=\"image\" alt=\"\">\n    <input id=\"image-selector-input\" type=\"file\" single (change)=\"onFileSelect($event)\" accept=\"image/png, image/jpeg\">\n  </div>\n  <div id=\"language-selector\">\n    <select name=\"lang\" id=\"lang\" [ngModel]=\"prefered_language\">\n      <option value=\"german\">Deutsch</option>\n      <option value=\"english\">English</option>\n    </select>\n  </div>\n  <input [ngClass]=\"required?'required':''\" name=\"username\" type=\"text\" placeholder=\"Username\" [(ngModel)]=\"username\">\n  <input [ngClass]=\"required?'required':''\" name=\"password\" type=\"password\" placeholder=\"Password\" [(ngModel)]=\"password\">\n  <input [ngClass]=\"required?'required':''\" name=\"repeat_password\" type=\"password\" placeholder=\"Repeat Password\" [(ngModel)]=\"repeat_password\">\n  <button class=\"button\">Register</button>\n</form>\n<div *ngIf=\"login\" class=\"registered_wrapper\">\n  <label for=\"not_registered\">Not registered yet?</label>\n  <button class=\"button\" id=\"not_registered\" (click)=\"login=false\">Register now!</button>\n</div>\n<div *ngIf=\"!login\" class=\"registered_wrapper\">\n  <label for=\"registered\">Already registered?</label>\n  <button class=\"button\" id=\"registered\" (click)=\"login=true\">Login now!</button>\n</div>\n"
+module.exports = "<form *ngIf=\"login\" class=\"login\" (ngSubmit)=\"onClickLogin()\">\n  <input [ngClass]=\"required?'required':''\" name=\"username\" type=\"text\" placeholder=\"Username\" [(ngModel)]=\"username\">\n  <input [ngClass]=\"required?'required':''\" name=\"password\" type=\"password\" placeholder=\"Password\" [(ngModel)]=\"password\">\n  <button class=\"button\">Login</button>\n</form>\n<form *ngIf=\"!login\" class=\"login\" (ngSubmit)=\"onClickRegister()\">\n  <div id=\"image-selector-wrapper\">\n    <div id=\"default-text\">Bild auswählen</div>\n    <img id=\"image-selector-image\" [src]=\"image\" alt=\"\">\n    <input id=\"image-selector-input\" type=\"file\" single (change)=\"onFileSelect($event)\" accept=\"image/png, image/jpeg\">\n  </div>\n  <div id=\"language-selector\">\n    <select name=\"lang\" id=\"lang\" [ngModel]=\"preferred_language\">\n      <option value=\"de\">Deutsch</option>\n      <option value=\"en\">English</option>\n    </select>\n  </div>\n  <input [ngClass]=\"required?'required':''\" name=\"username\" type=\"text\" placeholder=\"Username\" [(ngModel)]=\"username\">\n  <input [ngClass]=\"required?'required':''\" name=\"password\" type=\"password\" placeholder=\"Password\" [(ngModel)]=\"password\">\n  <input [ngClass]=\"required?'required':''\" name=\"repeat_password\" type=\"password\" placeholder=\"Repeat Password\" [(ngModel)]=\"repeat_password\">\n  <button class=\"button\">Register</button>\n</form>\n<div *ngIf=\"login\" class=\"registered_wrapper\">\n  <label for=\"not_registered\">Not registered yet?</label>\n  <button class=\"button\" id=\"not_registered\" (click)=\"login=false\">Register now!</button>\n</div>\n<div *ngIf=\"!login\" class=\"registered_wrapper\">\n  <label for=\"registered\">Already registered?</label>\n  <button class=\"button\" id=\"registered\" (click)=\"login=true\">Login now!</button>\n</div>\n"
 
 /***/ }),
 
@@ -496,7 +495,7 @@ var LoginComponent = /** @class */ (function () {
         this.username = null;
         this.password = null;
         this.repeat_password = null;
-        this.prefered_language = 'german';
+        this.preferred_language = 'de';
         this.image = null;
         this.required = false;
         this.login = true;
@@ -514,14 +513,14 @@ var LoginComponent = /** @class */ (function () {
         }
     };
     LoginComponent.prototype.onClickLogin = function () {
-        if (this.username && this.username.length > 1 && this.username.length < 10) {
+        if (this.username && this.username.length > 1 && this.username.length < 80) {
             this.socketService.login(this.username, this.password);
         }
         this.required = true;
     };
     LoginComponent.prototype.onClickRegister = function () {
-        if (this.username && this.username.length > 1 && this.username.length < 10 && this.password === this.repeat_password) {
-            this.socketService.register(this.username, this.password, this.image, this.prefered_language);
+        if (this.username && this.username.length > 1 && this.username.length < 80 && this.password === this.repeat_password) {
+            this.socketService.register(this.username, this.password, this.image, this.preferred_language);
         }
         else {
             this.required = true;
@@ -574,14 +573,20 @@ var SocketService = /** @class */ (function () {
         return this.connected;
     };
     SocketService.prototype.login = function (username, password) {
+        var _this = this;
         this.socket = socket_io_client__WEBPACK_IMPORTED_MODULE_2__(this.proxy_url, { query: { username: username, password: password } });
         this.socket.connect();
         this.connected = true;
         this.router.navigate(["/chat"]);
+        this._socket.on('disconnect', function () {
+            _this.connected = false;
+            _this.router.navigateByUrl('/');
+        });
     };
     SocketService.prototype.register = function (username, password, image, prefered_language) {
-        this.http.put(this.proxy_url + '/user', { username: username, password: password, image: image, prefered_language: prefered_language }).subscribe(function (res) {
-            console.log(res);
+        var _this = this;
+        this.http.post(this.proxy_url + '/user', { user: username, password: password, image: image, preferred_language: prefered_language }).subscribe(function (res) {
+            _this.login(res.id, password);
         });
         this.connected = true;
         // this.router.navigate(["/chat"]);

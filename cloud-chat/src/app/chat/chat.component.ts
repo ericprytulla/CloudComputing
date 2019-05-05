@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {SocketService} from "../services/socket.service";
 import {ToneAnalyzerService} from "../services/tone-analyzer.service";
+import {_sanitizeHtml} from "@angular/core/src/sanitization/html_sanitizer";
 
 export class Message{
   readonly senderId: string;
@@ -128,7 +129,7 @@ export class ChatComponent implements OnInit {
       this.sendAlert('user ' + user + ' disconnected', false)
       for (let chatroom in this.chatrooms) {
         this.chatrooms[chatroom].popUser(id);
-      };
+      }
     });
   }
 

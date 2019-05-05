@@ -1,6 +1,6 @@
 <form *ngIf="login" class="login" (ngSubmit)="onClickLogin()">
   <input [ngClass]="required?'required':''" name="username" type="text" placeholder="Username" [(ngModel)]="username">
-  <input [ngClass]="required?'required':''" name="password" type="text" placeholder="Password" [(ngModel)]="password">
+  <input [ngClass]="required?'required':''" name="password" type="password" placeholder="Password" [(ngModel)]="password">
   <button class="button">Login</button>
 </form>
 <form *ngIf="!login" class="login" (ngSubmit)="onClickRegister()">
@@ -10,9 +10,9 @@
     <input id="image-selector-input" type="file" single (change)="onFileSelect($event)" accept="image/png, image/jpeg">
   </div>
   <div id="language-selector">
-    <select name="lang" id="lang" [ngModel]="prefered_language">
-      <option value="german">Deutsch</option>
-      <option value="english">English</option>
+    <select name="lang" id="lang" [ngModel]="preferred_language">
+      <option value="de">Deutsch</option>
+      <option value="en">English</option>
     </select>
   </div>
   <input [ngClass]="required?'required':''" name="username" type="text" placeholder="Username" [(ngModel)]="username">

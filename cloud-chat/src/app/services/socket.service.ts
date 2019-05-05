@@ -25,11 +25,15 @@ export class SocketService {
     this.socket.connect();
     this.connected = true;
     this.router.navigate(["/chat"]);
+    this._socket.on('disconnect', () => {
+      this.connected = false;
+      this.router.navigateByUrl('/');
+    });
   }
 
   register(username, password: string, image: string | ArrayBuffer, prefered_language: string) {
-    this.http.put(this.proxy_url +'/user', {username: username, password: password, image: image, prefered_language: prefered_language}).subscribe((res: any) => {
-      console.log(res);
+    this.http.post(this.proxy_url +'/user', {user: username, password: password, image: image, preferred_language: prefered_language}).subscribe((res: any) => {
+      this.login(res.id, password);
     });
     this.connected = true;
    // this.router.navigate(["/chat"]);
