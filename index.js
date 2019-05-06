@@ -11,11 +11,6 @@ let groupUsers = {};
 let port = process.env.PORT || 3000;
 const html = __dirname + '/frontend';
 
-
-app.use(cors());
-app.use(express.static(html));
-app.use(bodyParser.json());
-
 app.use (function (req, res, next) {
     if (req.secure) {
         next();
@@ -24,6 +19,9 @@ app.use (function (req, res, next) {
     }
 });
 
+app.use(cors());
+app.use(express.static(html));
+app.use(bodyParser.json());
 
 io.on('connection', function(socket){
     console.log('a user connected');
