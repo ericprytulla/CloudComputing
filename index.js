@@ -3,7 +3,6 @@ let app = express();
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
 let cors = require('cors');
-let helmet = require('helmet');
 let bodyParser = require("body-parser");
 let XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 let users = [];
@@ -17,7 +16,7 @@ const html = __dirname + '/frontend';
 app.use(cors());
 app.use(express.static(html));
 app.use(bodyParser.json());
-app.use(helmet());
+//app.use(helmet());
 
 /*app.use (function (req, res, next) {
     if (req.secure|| process.env.BLUEMIX_REGION === undefined) {
