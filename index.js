@@ -11,17 +11,19 @@ let groupUsers = {};
 let port = process.env.PORT || 3000;
 const html = __dirname + '/frontend';
 
+
+
+app.use(cors());
+app.use(express.static(html));
+app.use(bodyParser.json());
+
 app.use (function (req, res, next) {
-    if (req.secure) {
+    if (req.secure|| process.env.BLUEMIX_REGION === undefined) {
         next();
     } else {
         res.redirect('https://' + req.headers.host + req.url);
     }
 });
-
-app.use(cors());
-app.use(express.static(html));
-app.use(bodyParser.json());
 
 io.on('connection', function(socket){
     console.log('a user connected');
