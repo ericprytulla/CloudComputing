@@ -6,6 +6,7 @@
   "version": "0.0.1",
   "description": "Cloud Computing chat application",
   "dependencies": {
+    "bcrypt": "^3.0.6",
     "body-parser": "^1.18.3",
     "cloudant": "^1.10.0-NOTICE",
     "cors": "^2.8.5",
