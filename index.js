@@ -2,6 +2,7 @@ let express = require('express');
 let app = express();
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
+let bcrypt = require('bcrypt');
 let cors = require('cors');
 const helmet = require('helmet');
 let bodyParser = require("body-parser");
@@ -185,6 +186,7 @@ function register(user){
                 resolve('Bad Request');
             }
         });
+        user.password = bcrypt.hash(user.password);
         request.send(JSON.stringify(user));
     });
 }
@@ -198,12 +200,15 @@ function login(user, password){
         request.setRequestHeader('Accept', 'application/json');
         request.addEventListener('load', function(event) {
             if (request.status >= 200 && request.status < 300) {
-                if(password === JSON.parse(request.responseText).password){
-                    resolve(JSON.parse(request.responseText));
-                } else {
-                    console.warn('Wrong Password');
-                    resolve({'message': 'Wrong Password'});
-                }
+                bcrypt.compare(password, JSON.parse(request.responseText).password).then(res => {
+                    if(res){
+                        resolve(JSON.parse(request.responseText));
+                    } else {
+                        console.warn('Wrong Password');
+                        resolve({'message': 'Wrong Password'});
+                    }
+                });
+
             } else {
                 console.warn(request.statusText, request.responseText);
                 resolve('Bad Request');
