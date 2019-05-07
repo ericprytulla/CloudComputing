@@ -11,8 +11,8 @@ export class SocketService {
 
   private socket;
   private connected: boolean;
-  private proxy_url: string = 'http://localhost:3000';
-  //private proxy_url: string = '';
+  //private proxy_url: string = 'http://localhost:3000';
+  private proxy_url: string = '';
 
   constructor( private router: Router, private http: HttpClient) { }
 

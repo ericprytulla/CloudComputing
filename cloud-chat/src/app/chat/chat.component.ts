@@ -53,7 +53,7 @@ export class Chatroom{
     this.users.push(user);
   }
   popUser(user: string){
-    this.users.splice(this.users.findIndex((u: User)=>{return u != null && u.equals(user)}), 1);
+    this.users.splice(this.users.findIndex((u: User)=>{return u !== null && u.equals(user)}), 1);
   }
   findUserById(id: string){
     let index = this.users.findIndex((u: User) => {return u.id == id});

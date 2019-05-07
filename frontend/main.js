@@ -263,7 +263,7 @@ var Chatroom = /** @class */ (function () {
         this.users.push(user);
     };
     Chatroom.prototype.popUser = function (user) {
-        this.users.splice(this.users.findIndex(function (u) { return u != null && u.equals(user); }), 1);
+        this.users.splice(this.users.findIndex(function (u) { return u !== null && u.equals(user); }), 1);
     };
     Chatroom.prototype.findUserById = function (id) {
         var index = this.users.findIndex(function (u) { return u.id == id; });
