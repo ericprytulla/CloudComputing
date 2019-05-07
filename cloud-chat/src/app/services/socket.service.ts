@@ -31,8 +31,8 @@ export class SocketService {
     });
   }
 
-  register(username, password: string, image: string | ArrayBuffer, prefered_language: string) {
-    this.http.post(this.proxy_url +'/user', {user: username, password: password, image: image, preferred_language: prefered_language}).subscribe((res: any) => {
+  register(username, password: string, image: string | ArrayBuffer, preferred_language: string) {
+    this.http.post(this.proxy_url +'/user', {user: username, password: password, image: image, preferred_language: preferred_language}).subscribe((res: any) => {
       this.login(res.id, password);
     });
     this.connected = true;

@@ -273,9 +273,10 @@ var Chatroom = /** @class */ (function () {
 }());
 
 var User = /** @class */ (function () {
-    function User(name, id) {
+    function User(name, id, image) {
         this.name = name;
         this.id = id;
+        this.image = image;
     }
     User.prototype.equals = function (id) {
         return id == this.id;
@@ -293,8 +294,8 @@ var ChatComponent = /** @class */ (function () {
         this.typeFile = false;
         this.moods = ['Red', 'OrangeRed', 'Coral', 'Orange', 'Gold', 'Yellow', 'GreenYellow', 'Lawngreen', 'YellowGreen', 'LimeGreen', 'Green'];
         this.chatrooms = { 'global': new Chatroom('global', 'global', 'group', true) };
-        this.socketService._socket.on('user connected', function (user, id) {
-            _this.chatrooms.global.pushUser(new User(user, id));
+        this.socketService._socket.on('user connected', function (user, id, image) {
+            _this.chatrooms.global.pushUser(new User(user, id, image));
             _this.sendAlert('user ' + user + ' connected', true);
         });
         this.socketService._socket.on('connected users', function (users) {
@@ -583,9 +584,9 @@ var SocketService = /** @class */ (function () {
             _this.router.navigateByUrl('/');
         });
     };
-    SocketService.prototype.register = function (username, password, image, prefered_language) {
+    SocketService.prototype.register = function (username, password, image, preferred_language) {
         var _this = this;
-        this.http.post(this.proxy_url + '/user', { user: username, password: password, image: image, preferred_language: prefered_language }).subscribe(function (res) {
+        this.http.post(this.proxy_url + '/user', { user: username, password: password, image: image, preferred_language: preferred_language }).subscribe(function (res) {
             _this.login(res.id, password);
         });
         this.connected = true;

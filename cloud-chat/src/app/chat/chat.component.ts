@@ -64,10 +64,12 @@ export class Chatroom{
 export class User {
   public name: string;
   readonly id: string;
+  public image: string | ArrayBuffer;
 
-  constructor(name, id: string){
+  constructor(name, id: string, image: string | ArrayBuffer){
     this.name = name;
     this.id = id;
+    this.image = image;
   }
 
   equals(id: string){
@@ -92,8 +94,8 @@ export class ChatComponent implements OnInit {
   public chatrooms: any = {'global': new Chatroom('global', 'global','group', true )};
 
   constructor(private socketService: SocketService, private toneAnalyzer: ToneAnalyzerService) {
-    this.socketService._socket.on('user connected', (user, id) => {
-      this.chatrooms.global.pushUser(new User(user, id));
+    this.socketService._socket.on('user connected', (user, id, image) => {
+      this.chatrooms.global.pushUser(new User(user, id, image));
       this.sendAlert('user ' + user + ' connected', true);
     });
     this.socketService._socket.on('connected users', (users) => {

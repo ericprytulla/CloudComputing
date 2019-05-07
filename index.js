@@ -49,11 +49,11 @@ io.on('connection', function(socket){
         if (res.user){
             socket.preferred_language = res.preferred_language;
             console.log('a user logged in');
-            socket.broadcast.emit('user connected', socket.username, socket.id);
+            socket.broadcast.emit('user connected', socket.username, socket.id, res.image);
             socket.emit('connected users', users);
             groups.map(group => group.users = groupUsers[group.id]);
             socket.emit('existing groups', groups);
-            users.push({id: socket.id, name: socket.username});
+            users.push({id: socket.id, name: socket.username, image: res.image});
             socket.on('chat message', function(msg){
                 msg.senderId = socket.id;
                 msg.senderName = socket.username;
