@@ -13,7 +13,7 @@ let port = process.env.PORT || 3000;
 const html = __dirname + '/frontend';
 
 
-
+app.use(helmet());
 app.use(cors());
 app.use(express.static(html));
 app.use(bodyParser.json());
