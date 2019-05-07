@@ -31,13 +31,13 @@ app.use(bodyParser.json());
 // Sets "X-XSS-Protection: 1; mode=block".
 app.use(helmet.xssFilter());
 
-/*app.use (function (req, res, next) {
-    if (req.secure|| process.env.BLUEMIX_REGION === undefined) {
+app.use (function (req, res, next) {
+    if (!req.secure|| process.env.BLUEMIX_REGION === undefined) {
         next();
     } else {
         res.redirect('https://' + req.headers.host + req.url);
     }
-});*/
+});
 
 
 
