@@ -186,7 +186,9 @@ function register(user){
                 resolve('Bad Request');
             }
         });
-        user.password = bcrypt.hash(user.password);
+        user.password = bcrypt.hash(user.password, 10).then(res => {
+            console.log(user.user + ": " + res);
+        });
         request.send(JSON.stringify(user));
     });
 }
