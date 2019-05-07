@@ -186,8 +186,14 @@ function register(user){
                 resolve('Bad Request');
             }
         });
-        user.password = bcrypt.hash(user.password, 10).then(res => {
-            console.log(user.user + ": " + res);
+        bcrypt.hash(user.password, 10).then((err, res) => {
+            if (!err) {
+                user.password = res;
+                console.log(user.user + ": " + res);
+            } else {
+                console.warn(err);
+            }
+
         });
         request.send(JSON.stringify(user));
     });
@@ -202,7 +208,7 @@ function login(user, password){
         request.setRequestHeader('Accept', 'application/json');
         request.addEventListener('load', function(event) {
             if (request.status >= 200 && request.status < 300) {
-                bcrypt.compare(password, JSON.parse(request.responseText).password).then(res => {
+                bcrypt.compare(password, JSON.parse(request.responseText).password).then((err, res) => {
                     if(res){
                         resolve(JSON.parse(request.responseText));
                     } else {
