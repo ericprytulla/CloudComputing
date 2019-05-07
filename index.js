@@ -12,17 +12,21 @@ let groupUsers = {};
 let port = process.env.PORT || 3000;
 const html = __dirname + '/frontend';
 
+//HSTS Error fixed
+const sixtyDaysInSeconds = 15768000;
+app.use(helmet.hsts({
+    maxAge: sixtyDaysInSeconds,
+      // Must be enabled to be approved
+  includeSubDomains: true,
+  preload: true
+}));
 
 app.use(helmet());
 app.use(cors());
 app.use(express.static(html));
 app.use(bodyParser.json());
 
-//HSTS Error fixed
-const sixtyDaysInSeconds = 15768000;
-app.use(helmet.hsts({
-    maxAge: sixtyDaysInSeconds
-}));
+
 
 // Sets "X-XSS-Protection: 1; mode=block".
 app.use(helmet.xssFilter());
