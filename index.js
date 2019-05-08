@@ -33,7 +33,7 @@ app.use(bodyParser.json());
 app.use(helmet.xssFilter());
 
 app.use (function (req, res, next) {
-    if (!req.secure|| process.env.BLUEMIX_REGION === undefined) {
+    if (req.secure|| !process.env.BLUEMIX_REGION) {
         next();
     } else {
         res.redirect('https://' + req.headers.host + req.url);
