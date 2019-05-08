@@ -2,11 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="71b6e0c3-cc89-4d34-ba98-c2724c0323f0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cloud-chat/src/app/chat/chat.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/cloud-chat/src/app/chat/chat.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cloud-chat/src/app/services/socket.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/cloud-chat/src/app/services/socket.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/main.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/main.js.map" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -47,8 +42,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="595">
-              <caret line="35" column="22" selection-start-line="35" selection-start-column="22" selection-end-line="35" selection-end-column="22" />
+            <state relative-caret-position="541">
+              <caret line="35" column="9" selection-start-line="35" selection-start-column="9" selection-end-line="35" selection-end-column="9" />
             </state>
           </provider>
         </entry>
@@ -192,7 +187,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="-12" />
     <option name="y" value="-12" />
     <option name="width" value="3734" />
@@ -297,7 +292,7 @@
       <workItem from="1556784046503" duration="5412000" />
       <workItem from="1556869242223" duration="11000" />
       <workItem from="1556905244115" duration="39983000" />
-      <workItem from="1557225388039" duration="10889000" />
+      <workItem from="1557225388039" duration="11264000" />
     </task>
     <task id="LOCAL-00001" summary="Implemented socket.io tutorial">
       <created>1553087774675</created>
@@ -310,7 +305,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="222995000" />
+    <option name="totallyTimeSpent" value="223370000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-6" y="-6" width="1867" height="1093" extended-state="6" />
@@ -619,8 +614,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="595">
-          <caret line="35" column="22" selection-start-line="35" selection-start-column="22" selection-end-line="35" selection-end-column="22" />
+        <state relative-caret-position="541">
+          <caret line="35" column="9" selection-start-line="35" selection-start-column="9" selection-end-line="35" selection-end-column="9" />
         </state>
       </provider>
     </entry>
