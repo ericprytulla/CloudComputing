@@ -592,9 +592,9 @@ var SocketService = /** @class */ (function () {
         var _this = this;
         this.http.post(this.proxy_url + '/user', { user: username, password: password, image: image, preferred_language: preferred_language }).subscribe(function (res) {
             _this.login(res.id, password);
+        }, function (error1) {
+            console.log("User already exists!");
         });
-        this.connected = true;
-        // this.router.navigate(["/chat"]);
     };
     SocketService.prototype.sendMessage = function (message) {
         this.socket.emit('chat message', message);

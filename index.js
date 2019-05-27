@@ -1,7 +1,7 @@
 let express = require('express');
 let app = express();
 let http = require('http').Server(app);
-let io = require('socket.io')(http);
+let io = require('socket.io')(http, {'origins': '*:* localhost:* http://localhost:*'});
 let bcrypt = require('bcrypt');
 let cors = require('cors');
 const helmet = require('helmet');
@@ -23,7 +23,6 @@ app.use(helmet.hsts({
 }));
 
 app.use(helmet());
-app.use(cors());
 app.use(express.static(html));
 app.use(bodyParser.json());
 
@@ -95,6 +94,8 @@ io.on('connection', function(socket){
         } else {
             socket.disconnect(true);
         }
+    },() => {
+        socket.disconnect(true);
     });
 
 });
@@ -118,7 +119,7 @@ function getTone(message){
     });
 };
 
-app.post('/user', function(req, res){
+app.post('/user', cors(), function(req, res){
     if ( req.body.user && req.body.password && req.body.preferred_language) {
         register(req.body).then(result => {
             res.send(result);
@@ -182,7 +183,7 @@ function register(user){
             if (request.status >= 200 && request.status < 300) {
                 resolve(JSON.parse(request.responseText));
             } else {
-                console.warn(request.statusText, request.responseText);
+                console.warn("Register:", request.responseText);
                 resolve('Bad Request');
             }
         });
@@ -213,7 +214,7 @@ function login(user, password){
                 });
 
             } else {
-                console.warn(request.statusText, request.responseText);
+                console.warn("Login:", request.responseText);
                 resolve('Bad Request');
             }
         });

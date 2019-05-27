@@ -48,3 +48,8 @@ d
 .env,3\c\3c84dcdc6bbe3d7817c49dcdc327b926fea1808a
 <
 manifest.yml,2\4\24859e6ddc41947e69f551c4e9ae37e6f72faafa
+=
+.dockerignore,0\5\05a721ebe3ba0754116825ed1359ff1785f4bbac
+:
+
+Dockerfile,6\6\6651ddff6eb82c840ced7c1dddee15c6e1913dd4

@@ -11,8 +11,8 @@ export class SocketService {
 
   private socket;
   private connected: boolean;
-  private proxy_url: string = 'http://localhost:3000';
-  //private proxy_url: string = '';
+  //private proxy_url: string = 'http://localhost:3000';
+  private proxy_url: string = '';
 
   constructor( private router: Router, private http: HttpClient) { }
 
@@ -34,9 +34,10 @@ export class SocketService {
   register(username, password: string, image: string | ArrayBuffer, preferred_language: string) {
     this.http.post(this.proxy_url +'/user', {user: username, password: password, image: image, preferred_language: preferred_language}).subscribe((res: any) => {
       this.login(res.id, password);
-    });
-    this.connected = true;
-   // this.router.navigate(["/chat"]);
+    },
+      (error1) => {
+        console.log("User already exists!")
+      });
   }
 
   sendMessage(message: Message){
