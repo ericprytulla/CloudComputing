@@ -21,7 +21,10 @@ export class SocketService {
   }
 
   login(username, password: string) {
-    this.socket = io(this.proxy_url,{ query: {username: username, password: password}});
+    this.socket = io(this.proxy_url,{ 
+      query: {username: username, password: password},
+      transports: ['websocket'],
+      reconnection: false});
     this.socket.connect();
     this.connected = true;
     this.router.navigate(["/chat"]);
