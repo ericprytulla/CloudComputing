@@ -51,7 +51,9 @@ app.use (function (req, res, next) {
 io.on('connection', function(socket){
     console.log('a user connected');
     socket.username = socket.handshake.query.username;
+    console.log(socket.handshake.query.username);
     login(socket.username, socket.handshake.query.password).then(res => {
+        console.log(res);
         if (res.user){
             socket.preferred_language = res.preferred_language;
             console.log('a user logged in');
@@ -102,6 +104,7 @@ io.on('connection', function(socket){
             socket.disconnect(true);
         }
     },() => {
+        console.log('login failed');
         socket.disconnect(true);
     });
 

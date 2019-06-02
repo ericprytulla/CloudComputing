@@ -11,6 +11,7 @@ export class SocketService {
 
   private socket;
   private connected: boolean;
+  //private proxy_url: string = 'https://schnubbedibuhhhhh.eu-de.mybluemix.net/login';
   //private proxy_url: string = 'http://localhost:3000';
   private proxy_url: string = '';
 
@@ -22,7 +23,7 @@ export class SocketService {
 
   login(username, password: string) {
     this.socket = io(this.proxy_url,{ 
-      query: {username: username, password: password},transports: ['websocket'] });
+      query: {username: username, password: password}, transports: ['websocket'] });
     this.socket.connect();
     this.connected = true;
     this.router.navigate(["/chat"]);
