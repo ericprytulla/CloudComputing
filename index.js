@@ -7,11 +7,18 @@ let cors = require('cors');
 const helmet = require('helmet');
 let bodyParser = require("body-parser");
 let XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+let redis = require('redis');
+let adapter = require('socket.io-redis');
 let users = [];
 let groups = [];
 let groupUsers = {};
 let port = process.env.PORT || 3000;
 const html = __dirname + '/frontend';
+
+const pub = redis.createClient('19404','redis-19404.c14.us-east-1-2.ec2.cloud.redislabs.com',{auth_pass:'6L6ph9bI1BI9mbIWEMcSIbjuzo3YPmkC'});
+const sub = redis.createClient('19404','redis-19404.c14.us-east-1-2.ec2.cloud.redislabs.com',{auth_pass:'6L6ph9bI1BI9mbIWEMcSIbjuzo3YPmkC'});
+
+io.adapter(adapter({pubClient: pub, subClient: sub}));
 
 //HSTS Error fixed
 const sixtyDaysInSeconds = 15768000;
