@@ -189,7 +189,7 @@ var AppModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div id=\"chat-component-wrapper\" [style.background-color]=\"ConservationMood\">\n  <div id=\"chat-rooms-selector\">\n    <div *ngFor=\"let room of chatrooms | keyvalue\" class=\"chat-room-selector\" (click)=\"selected = room.key\">\n      <div class=\"centered-text\" [ngClass]=\"room.key==selected?'selected-room':''\">{{room.value.name}}</div>\n    </div>\n    <button id=\"add-group\" (click)=\"onClickCreateGroup()\">\n      +\n    </button>\n  </div>\n  <div id=\"chat-room\">\n    <div id=\"header\">\n      <p>\n        <span *ngIf=\"chatrooms[selected].isMember\">You</span>\n        <span *ngFor=\"let user of chatrooms[selected].users\" (click)=\"onClickPrivateMessage(user)\" class=\"clickable\">, {{user.name}}</span>\n      </p>\n    </div>\n    <div id=\"messages\">\n      <div [ngClass]=\"{'positive':positive, 'negative': !positive, 'active': alertMessage}\" class=\"alert\" ><span>{{alertMessage}}</span></div>\n      <div class=\"message-wrapper\" *ngFor=\"let msg of chatrooms[selected].messages\">\n        <img *ngIf=\"msg.senderId\" width=\"70px\" max-height=\"70px\" class=\"message-sender\" [src]=\"chatrooms[selected].findUserById(msg.senderId).image\" [alt]=\"msg.senderName\" (click)=\"onClickPrivateMessage(chatrooms[selected].findUserById(msg.senderId))\">\n        <div [ngClass]=\"msg.senderId?'message':'message-personal'\" class=\"message-personal\">\n          <div class=\"message-text\">{{msg.message}}</div>\n          <div *ngIf=\"msg.media\">\n            <img *ngIf=\"msg.media.split(':')[1].split('/')[0] == 'image'\" [src]=\"msg.media\" width=\"500px\" alt=\"\">\n            <video *ngIf=\"msg.media.split(':')[1].split('/')[0] == 'video'\" [src]=\"msg.media\" width=\"500px\"></video>\n            <audio *ngIf=\"msg.media.split(':')[1].split('/')[0] == 'audio'\" [src]=\"msg.media\" width=\"500px\"></audio>\n          </div>\n          <div class=\"message-mood\">{{msg.mood}}</div>\n          <div class=\"message-timestamp\">{{msg.timeStampString}}</div>\n        </div>\n      </div>\n    </div>\n    <button *ngIf=\"!chatrooms[selected].isMember\" id=\"join-chat\" (click)=\"onClickJoinGroup()\">JOIN CHAT</button>\n    <form *ngIf=\"chatrooms[selected].isMember\" (ngSubmit)=\"onClickSend()\">\n      <input *ngIf=\"typeFile\" type=\"file\" single (change)=\"onFileSelect($event)\">\n      <input *ngIf=\"!typeFile\" name=\"message\" id=\"m\" autocomplete=\"off\" [(ngModel)]=\"message\"/>\n      <button class=\"button\">Send</button>\n      <button class=\"button\" (click)=\"switchMode($event)\">Modus</button>\n    </form>\n  </div>\n</div>\n"
+module.exports = "<div id=\"chat-component-wrapper\" [style.background-color]=\"ConservationMood\">\n  <div id=\"chat-rooms-selector\">\n    <div *ngFor=\"let room of chatrooms | keyvalue\" class=\"chat-room-selector\" (click)=\"selected = room.key\">\n      <div class=\"centered-text\" [ngClass]=\"room.key==selected?'selected-room':''\">{{room.value.name}}</div>\n    </div>\n    <button id=\"add-group\" (click)=\"onClickCreateGroup()\">\n      +\n    </button>\n  </div>\n  <div id=\"chat-room\">\n    <div id=\"header\">\n      <p>\n        <span *ngIf=\"chatrooms[selected].isMember\">You</span>\n        <span *ngFor=\"let user of chatrooms[selected].users\" (click)=\"onClickPrivateMessage(user)\" class=\"clickable\">, {{user.name}}</span>\n      </p>\n    </div>\n    <div id=\"messages\">\n      <div [ngClass]=\"{'positive':positive, 'negative': !positive, 'active': alertMessage}\" class=\"alert\" ><span>{{alertMessage}}</span></div>\n      <div class=\"message-wrapper\" *ngFor=\"let msg of chatrooms[selected].messages\">\n        <img *ngIf=\"msg.senderId\" width=\"70px\" max-height=\"70px\" class=\"message-sender\" [src]=\"chatrooms[selected].findUserById(msg.senderName).image\" [alt]=\"msg.senderName\" (click)=\"onClickPrivateMessage(chatrooms[selected].findUserById(msg.senderName))\">\n        <div [ngClass]=\"msg.senderId?'message':'message-personal'\" class=\"message-personal\">\n          <div class=\"message-text\">{{msg.message}}</div>\n          <div *ngIf=\"msg.media\">\n            <img *ngIf=\"msg.media.split(':')[1].split('/')[0] == 'image'\" [src]=\"msg.media\" width=\"500px\" alt=\"\">\n            <video *ngIf=\"msg.media.split(':')[1].split('/')[0] == 'video'\" [src]=\"msg.media\" width=\"500px\"></video>\n            <audio *ngIf=\"msg.media.split(':')[1].split('/')[0] == 'audio'\" [src]=\"msg.media\" width=\"500px\"></audio>\n          </div>\n          <div class=\"message-mood\">{{msg.mood}}</div>\n          <div class=\"message-timestamp\">{{msg.timeStampString}}</div>\n        </div>\n      </div>\n    </div>\n    <button *ngIf=\"!chatrooms[selected].isMember\" id=\"join-chat\" (click)=\"onClickJoinGroup()\">JOIN CHAT</button>\n    <form *ngIf=\"chatrooms[selected].isMember\" (ngSubmit)=\"onClickSend()\">\n      <input *ngIf=\"typeFile\" type=\"file\" single (change)=\"onFileSelect($event)\">\n      <input *ngIf=\"!typeFile\" name=\"message\" id=\"m\" autocomplete=\"off\" [(ngModel)]=\"message\"/>\n      <button class=\"button\">Send</button>\n      <button class=\"button\" (click)=\"switchMode($event)\">Modus</button>\n    </form>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -260,7 +260,17 @@ var Chatroom = /** @class */ (function () {
         this.last_msg = message.timeStamp;
     };
     Chatroom.prototype.pushUser = function (user) {
-        this.users.push(user);
+        var pushed = false;
+        for (var i = 0; i < this.users.length; i++) {
+            if (user.name === this.users[i].name) {
+                this.users[i] = user;
+                pushed = true;
+            }
+        }
+        ;
+        if (!pushed) {
+            this.users.push(user);
+        }
     };
     Chatroom.prototype.popUser = function (user) {
         this.users.splice(this.users.findIndex(function (u) {
@@ -269,8 +279,8 @@ var Chatroom = /** @class */ (function () {
             }
         }), 1);
     };
-    Chatroom.prototype.findUserById = function (id) {
-        var index = this.users.findIndex(function (u) { return u.id == id; });
+    Chatroom.prototype.findUserById = function (name) {
+        var index = this.users.findIndex(function (u) { return u.name == name; });
         return this.users[index];
     };
     return Chatroom;
@@ -303,7 +313,12 @@ var ChatComponent = /** @class */ (function () {
             _this.sendAlert('user ' + user + ' connected', true);
         });
         this.socketService._socket.on('connected users', function (users) {
-            users.map(function (user) { _this.chatrooms.global.pushUser(user); });
+            console.log(JSON.stringify(users));
+            users.forEach(function (user) {
+                if (user.name !== _this.socketService._name) {
+                    _this.chatrooms.global.pushUser(user);
+                }
+            });
         });
         this.socketService._socket.on('existing groups', function (groups) {
             groups.map(function (group) {
@@ -318,11 +333,11 @@ var ChatComponent = /** @class */ (function () {
         this.socketService._socket.on('personal message', function (msg) {
             var message = new Message(msg.message, msg.file, msg.to, new Date(msg.timeStamp), msg.type, msg.mood.mood, msg.senderId, msg.senderName);
             _this.toneAnalyzer.moodify(msg.mood.mood);
-            if (!_this.chatrooms[msg.senderId]) {
-                _this.chatrooms[msg.senderId] = new Chatroom(msg.senderName, msg.senderId, 'personal', true);
-                _this.chatrooms[msg.senderId].pushUser(_this.chatrooms['global'].findUserById(msg.senderId));
+            if (!_this.chatrooms[msg.senderName]) {
+                _this.chatrooms[msg.senderName] = new Chatroom(msg.senderName, msg.senderId, 'personal', true);
+                _this.chatrooms[msg.senderName].pushUser(_this.chatrooms['global'].findUserById(msg.senderName));
             }
-            _this.chatrooms[msg.senderId].pushMessage(message);
+            _this.chatrooms[msg.senderName].pushMessage(message);
         });
         this.socketService._socket.on('group created', function (name, userId) {
             _this.chatrooms[name] = new Chatroom(name, name, 'group', false);
@@ -361,9 +376,9 @@ var ChatComponent = /** @class */ (function () {
         this.socketService.joinRoom(this.selected);
     };
     ChatComponent.prototype.onClickPrivateMessage = function (to) {
-        this.chatrooms[to.id] = new Chatroom(to.name, to.id, 'personal', true);
-        this.selected = to.id;
-        this.chatrooms[to.id].pushUser(to);
+        this.chatrooms[to.name] = new Chatroom(to.name, to.id, 'personal', true);
+        this.selected = to.name;
+        this.chatrooms[to.name].pushUser(to);
     };
     ChatComponent.prototype.onFileSelect = function (event) {
         var _this = this;
@@ -571,7 +586,8 @@ var SocketService = /** @class */ (function () {
     function SocketService(router, http) {
         this.router = router;
         this.http = http;
-        //private proxy_url: string = 'https://schnubbedibuhhhhh.eu-de.mybluemix.net/login';
+        this.name = '';
+        //private proxy_url: string = 'https://schnubbedibuhhhhh.eu-de.mybluemix.net';
         //private proxy_url: string = 'http://localhost:3000';
         this.proxy_url = '';
     }
@@ -585,10 +601,20 @@ var SocketService = /** @class */ (function () {
         });
         this.socket.connect();
         this.connected = true;
+        this.name = username;
         this.router.navigate(["/chat"]);
-        this._socket.on('disconnect', function () {
-            _this.connected = false;
-            _this.router.navigateByUrl('/');
+        this._socket.on('disconnect', function (bool) {
+            console.log(bool);
+            if (bool === 'io server disconnect') {
+                _this.name = '';
+                _this.connected = false;
+                _this.router.navigateByUrl('/');
+            }
+            else {
+                _this.socket = socket_io_client__WEBPACK_IMPORTED_MODULE_2__(_this.proxy_url, {
+                    query: { username: username, password: password }, transports: ['websocket']
+                });
+            }
         });
     };
     SocketService.prototype.register = function (username, password, image, preferred_language) {
@@ -611,6 +637,13 @@ var SocketService = /** @class */ (function () {
     Object.defineProperty(SocketService.prototype, "_socket", {
         get: function () {
             return this.socket;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(SocketService.prototype, "_name", {
+        get: function () {
+            return this.name;
         },
         enumerable: true,
         configurable: true

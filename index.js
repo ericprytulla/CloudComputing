@@ -9,7 +9,6 @@ let bodyParser = require("body-parser");
 let XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 let redis = require('redis');
 let adapter = require('socket.io-redis');
-let users = [];
 let groups = [];
 let groupUsers = {};
 let port = process.env.PORT || 3000;
@@ -58,10 +57,14 @@ io.on('connection', function(socket){
             socket.preferred_language = res.preferred_language;
             console.log('a user logged in');
             socket.broadcast.emit('user connected', socket.username, socket.id, res.image);
-            socket.emit('connected users', users);
+            connectedUsers().then(res => {
+                socket.emit('connected users', res);
+            });
             groups.map(group => group.users = groupUsers[group.id]);
             socket.emit('existing groups', groups);
-            users.push({id: socket.id, name: socket.username, image: res.image});
+            connect({id: socket.id, name: socket.username, image: res.image}).then((res) => {
+
+            });
             socket.on('chat message', function(msg){
                 msg.senderId = socket.id;
                 msg.senderName = socket.username;
@@ -83,22 +86,22 @@ io.on('connection', function(socket){
             });
             socket.on('disconnect', function(){
                 console.log('user disconnected');
-                socket.broadcast.emit('user disconnected', socket.username, socket.id);
-                users.splice(users.findIndex((id)=>{return id == this.id}),1);
-                delete groupUsers[socket.id];
+                socket.broadcast.emit('user disconnected', socket.username, socket.username);
+                disconnect(socket.username, socket.rev);
+                delete groupUsers[socket.username];
             });
             socket.on('create group', function (name) {
                 console.log('new group');
                 socket.join(name);
                 groups.push({id:name, users: []});
                 groupUsers[name] = [socket.id];
-                socket.broadcast.emit('group created', name, socket.id);
+                socket.broadcast.emit('group created', name, socket.username);
             });
             socket.on('join group', function(name) {
                 console.log('join group');
                 groupUsers[name].push(socket.id);
                 socket.join(name);
-                socket.broadcast.emit('user joined', name, socket.id);
+                socket.broadcast.emit('user joined', name, socket.username);
             });
         } else {
             socket.disconnect(true);
@@ -106,7 +109,9 @@ io.on('connection', function(socket){
     },() => {
         console.log('login failed');
         socket.disconnect(true);
-    });
+    }).catch((reason => {
+        console.log(reason);
+    }));
 
 });
 
@@ -175,14 +180,6 @@ function getTranslation(msg, lang){
     });
 }
 
-register({'user': 'Peter', 'password': 'password', 'preferred_language': 'es'})
-    .then(res => {
-    console.log(JSON.stringify(res));
-    login(res.id, 'password').then(res => {
-        console.log(JSON.stringify(res))
-    });
-});
-
 function register(user){
     return new Promise(resolve => {
         let request = new XMLHttpRequest();
@@ -232,6 +229,64 @@ function login(user, password){
     })
 }
 
+function disconnect(id, rev){
+    return new Promise(resolve => {
+        let request = new XMLHttpRequest();
+        request.open('DELETE', 'https://delivery-brash-mouse.eu-de.mybluemix.net/disconnect/');
+        request.setRequestHeader('Content-Type', 'application/json');
+        request.setRequestHeader('Accept', 'application/json');
+        request.addEventListener('load', function(event) {
+            if (request.status >= 200 && request.status < 300) {
+                console.log("disconnect: " + JSON.stringify(request.responseText));
+                resolve('disconnected');
+            } else {
+                console.warn("disconnect: ", request.responseText);
+                resolve('Bad Request');
+            }
+        });
+        console.log("id: " + id);
+        console.log("rev: " + rev);
+        request.send(JSON.stringify({"id": id, "rev": rev}));
+    })
+}
+
+function connect(user){
+    return new Promise(resolve => {
+        let request = new XMLHttpRequest();
+        request.open('POST', 'https://delivery-brash-mouse.eu-de.mybluemix.net/connect/');
+        request.setRequestHeader('Content-Type', 'application/json');
+        request.setRequestHeader('Accept', 'application/json');
+        request.addEventListener('load', function(event) {
+            if (request.status >= 200 && request.status < 300) {
+                console.log("connect: " + request.responseText);
+                resolve(request.responseText);
+            } else {
+                console.warn("connect: ", request.responseText);
+                resolve('Bad Request');
+            }
+        });
+        request.send(JSON.stringify(user));
+    })
+}
+
+function connectedUsers(){
+    return new Promise(resolve => {
+        let request = new XMLHttpRequest();
+        request.open('GET', 'https://delivery-brash-mouse.eu-de.mybluemix.net/connectedUsers/');
+        request.setRequestHeader('Content-Type', 'application/json');
+        request.setRequestHeader('Accept', 'application/json');
+        request.addEventListener('load', function(event) {
+            if (request.status >= 200 && request.status < 300) {
+                console.log("connected users: " + request.responseText);
+                resolve(JSON.parse(request.responseText));
+            } else {
+                console.warn("connected users: ", request.responseText);
+                resolve('Bad Request');
+            }
+        });
+        request.send();
+    })
+}
 
 
 

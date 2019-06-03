@@ -11,7 +11,8 @@ export class SocketService {
 
   private socket;
   private connected: boolean;
-  //private proxy_url: string = 'https://schnubbedibuhhhhh.eu-de.mybluemix.net/login';
+  private name: string = '';
+  //private proxy_url: string = 'https://schnubbedibuhhhhh.eu-de.mybluemix.net';
   //private proxy_url: string = 'http://localhost:3000';
   private proxy_url: string = '';
 
@@ -26,10 +27,18 @@ export class SocketService {
       query: {username: username, password: password}, transports: ['websocket'] });
     this.socket.connect();
     this.connected = true;
+    this.name = username;
     this.router.navigate(["/chat"]);
-    this._socket.on('disconnect', () => {
-      this.connected = false;
-      this.router.navigateByUrl('/');
+    this._socket.on('disconnect', (bool) => {
+      console.log(bool);
+      if (bool === 'io server disconnect') {
+        this.name = '';
+        this.connected = false;
+        this.router.navigateByUrl('/');
+      } else {
+        this.socket = io(this.proxy_url,{
+          query: {username: username, password: password}, transports: ['websocket'] });
+      }
     });
   }
 
@@ -56,5 +65,9 @@ export class SocketService {
 
   get _socket(){
     return this.socket;
+  }
+
+  get _name(){
+    return this.name;
   }
 }

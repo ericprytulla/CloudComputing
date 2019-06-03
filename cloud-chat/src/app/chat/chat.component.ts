@@ -50,7 +50,17 @@ export class Chatroom{
   }
 
   pushUser(user: User){
-    this.users.push(user);
+    let pushed = false;
+    for(let i = 0; i < this.users.length; i++) {
+        if (user.name === this.users[i].name){
+          this.users[i] = user;
+          pushed = true;
+        }
+      };
+    if (!pushed){
+      this.users.push(user);
+    }
+
   }
   popUser(user: string){
     this.users.splice(this.users.findIndex((u: any)=>{
@@ -59,8 +69,8 @@ export class Chatroom{
       }
       }), 1);
   }
-  findUserById(id: string){
-    let index = this.users.findIndex((u: User) => {return u.id == id});
+  findUserById(name: string){
+    let index = this.users.findIndex((u: User) => {return u.name == name});
     return this.users[index];
   }
 }
@@ -103,7 +113,12 @@ export class ChatComponent implements OnInit {
       this.sendAlert('user ' + user + ' connected', true);
     });
     this.socketService._socket.on('connected users', (users) => {
-      users.map((user) => {this.chatrooms.global.pushUser(user)});
+      console.log(JSON.stringify(users));
+      users.forEach((user) => {
+        if (user.name !== this.socketService._name){
+          this.chatrooms.global.pushUser(user);
+        }
+      });
     });
     this.socketService._socket.on('existing groups', (groups) => {
       groups.map((group) => {
@@ -118,11 +133,11 @@ export class ChatComponent implements OnInit {
     this.socketService._socket.on('personal message', (msg) => {
       let message = new Message(msg.message, msg.file, msg.to, new Date(msg.timeStamp), msg.type, msg.mood.mood, msg.senderId, msg.senderName);
       this.toneAnalyzer.moodify(msg.mood.mood);
-      if (!this.chatrooms[msg.senderId]){
-        this.chatrooms[msg.senderId] = new Chatroom(msg.senderName, msg.senderId, 'personal', true);
-        this.chatrooms[msg.senderId].pushUser(this.chatrooms['global'].findUserById(msg.senderId));
+      if (!this.chatrooms[msg.senderName]){
+        this.chatrooms[msg.senderName] = new Chatroom(msg.senderName, msg.senderId, 'personal', true);
+        this.chatrooms[msg.senderName].pushUser(this.chatrooms['global'].findUserById(msg.senderName));
       }
-      this.chatrooms[msg.senderId].pushMessage(message);
+      this.chatrooms[msg.senderName].pushMessage(message);
     });
     this.socketService._socket.on('group created', (name, userId) => {
       this.chatrooms[name] = new Chatroom(name, name, 'group', false);
@@ -166,9 +181,9 @@ export class ChatComponent implements OnInit {
   }
 
   onClickPrivateMessage(to: User){
-    this.chatrooms[to.id] = new Chatroom(to.name, to.id, 'personal', true);
-    this.selected = to.id;
-    this.chatrooms[to.id].pushUser(to);
+    this.chatrooms[to.name] = new Chatroom(to.name, to.id, 'personal', true);
+    this.selected = to.name;
+    this.chatrooms[to.name].pushUser(to);
   }
 
   onFileSelect(event){
