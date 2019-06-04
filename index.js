@@ -45,7 +45,17 @@ app.use (function (req, res, next) {
     }
 });
 
-
+io.of('/').adapter.customHook = (data, cb) => {
+    let lang
+    try {
+       lang = io.sockets.connected[data].preferred_language
+    } catch(err) {
+        console.warn('user ' + data + ' not in this node');
+    }
+    if (lang){
+        cb(lang);
+    }
+};
 
 io.on('connection', function(socket){
     console.log('a user connected');
@@ -67,6 +77,9 @@ io.on('connection', function(socket){
                 msg.senderId = socket.id;
                 msg.senderName = socket.username;
                 let language = '';
+                io.of('/').adapter.customRequest(msg.to, function(err, replies){
+                    console.log(replies);
+                });
                 if (msg.to !== "global" && io.sockets.connected[msg.to]) {
                     language = io.sockets.connected[msg.to].preferred_language;
                 }
@@ -90,7 +103,12 @@ io.on('connection', function(socket){
             });
             socket.on('create group', function (name) {
                 console.log('new group');
-                socket.join(name);
+                io.of('/').adapter.remoteJoin(socket.id, name, (err) => {
+                    if (err) {
+                        console.warn("Remote Create group: " + name + " didnt work. Error: " + err);
+                    }
+                });
+                //socket.join(name);
                 groups.push({id:name, users: []});
                 groupUsers[name] = [socket.id];
                 socket.broadcast.emit('group created', name, socket.username);
@@ -98,7 +116,12 @@ io.on('connection', function(socket){
             socket.on('join group', function(name) {
                 console.log('join group');
                 groupUsers[name].push(socket.id);
-                socket.join(name);
+                //socket.join(name);
+                io.of('/').adapter.remoteJoin(socket.id, name, (err) => {
+                    if (err) {
+                        console.warn("Remote Join group: " + name + " didnt work. Error: " + err);
+                    }
+                });
                 socket.broadcast.emit('user joined', name, socket.username);
             });
         } else {

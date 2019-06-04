@@ -316,7 +316,7 @@ var ChatComponent = /** @class */ (function () {
             var name = _this.socketService._name;
             users.forEach(function (user) {
                 if (user.name !== name) {
-                    _this.chatrooms.global.pushUser(user);
+                    _this.chatrooms.global.pushUser(new User(user.name, user.socket_id, user.image));
                 }
             });
         });
@@ -356,7 +356,12 @@ var ChatComponent = /** @class */ (function () {
     ChatComponent.prototype.ngOnInit = function () {
     };
     ChatComponent.prototype.onClickSend = function () {
-        var messageObj = new Message(this.message, this.file, this.selected, new Date(), this.chatrooms[this.selected].type);
+        var userId = this.selected;
+        console.log(this.chatrooms[this.selected].type);
+        if (this.chatrooms[this.selected].type === 'personal') {
+            userId = this.chatrooms[this.selected].users[0].id;
+        }
+        var messageObj = new Message(this.message, this.file, userId, new Date(), this.chatrooms[this.selected].type);
         this.chatrooms[this.selected].messages.push(messageObj);
         this.socketService.sendMessage(messageObj);
         this.message = '';

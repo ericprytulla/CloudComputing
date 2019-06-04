@@ -116,7 +116,7 @@ export class ChatComponent implements OnInit {
       let name = this.socketService._name;
       users.forEach((user) => {
         if (user.name !== name){
-          this.chatrooms.global.pushUser(user);
+          this.chatrooms.global.pushUser(new User(user.name, user.socket_id, user.image));
         }
       });
     });
@@ -158,7 +158,12 @@ export class ChatComponent implements OnInit {
   }
 
   onClickSend(){
-    var messageObj: Message = new Message(this.message, this.file, this.selected, new Date(), this.chatrooms[this.selected].type);
+    let userId = this.selected;
+    console.log(this.chatrooms[this.selected].type);
+    if(this.chatrooms[this.selected].type === 'personal'){
+      userId = this.chatrooms[this.selected].users[0].id;
+    }
+    var messageObj: Message = new Message(this.message, this.file, userId, new Date(), this.chatrooms[this.selected].type);
     this.chatrooms[this.selected].messages.push(messageObj);
     this.socketService.sendMessage(messageObj);
     this.message = '';
