@@ -29,9 +29,8 @@ export class SocketService {
     this.connected = true;
     this.name = username;
     this.router.navigate(["/chat"]);
-    this._socket.on('disconnect', (bool) => {
-      console.log(bool);
-      if (bool === 'io server disconnect') {
+    this._socket.on('disconnect', (reason) => {
+      if (reason === 'io server disconnect') {
         this.name = '';
         this.connected = false;
         this.router.navigateByUrl('/');

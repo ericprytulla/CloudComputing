@@ -58,24 +58,24 @@ io.of('/').adapter.customHook = (data, cb) => {
 };
 
 io.on('connection', function(socket){
-    console.log('a user connected');
     socket.username = socket.handshake.query.username;
+    console.log('a user connected: ' + socket.username);
     login(socket.username, socket.handshake.query.password).then(res => {
         if (res.user){
             socket.preferred_language = res.preferred_language;
-            console.log('a user logged in');
+            console.log('a user logged in: ' + res.user);
             socket.broadcast.emit('user connected', socket.username, socket.id, res.image);
             connectedUsers().then(res => {
                 socket.emit('connected users', res);
             });
             groups.map(group => group.users = groupUsers[group.id]);
             socket.emit('existing groups', groups);
-            connect({socket_id: socket.id, name: socket.username, image: res.image}).then((res) => {
-
-            });
+            connect({socket_id: socket.id, name: socket.username, image: res.image}).then((res) => {});
             socket.on('chat message', function(msg){
                 msg.senderId = socket.id;
                 msg.senderName = socket.username;
+                console.log("Sender: " + msg.senderName);
+                console.log("To: " + msg.to);
                 let language = '';
                 io.of('/').adapter.customRequest(msg.to, function(err, replies){
                     console.log(replies);
@@ -87,7 +87,7 @@ io.on('connection', function(socket){
                     msg.message = result;
                     getTone(msg.message).then(mood => {
                         msg.mood = mood;
-                        if (msg.to == "global"){
+                        if (msg.to === "global"){
                             socket.broadcast.emit('group message', msg);
                         } else {
                             socket.broadcast.to(msg.to).emit(msg.type + ' message', msg);
@@ -100,6 +100,10 @@ io.on('connection', function(socket){
                 socket.broadcast.emit('user disconnected', socket.username, socket.username);
                 disconnect(socket.username, socket.rev);
                 delete groupUsers[socket.username];
+                io.of('/').adapter.remoteDisconnect(socket.id, true, (err) => {
+                    if (err) { console.log(JSON.stringify(err)) }
+                    // success
+                });
             });
             socket.on('create group', function (name) {
                 console.log('new group');
@@ -125,11 +129,19 @@ io.on('connection', function(socket){
                 socket.broadcast.emit('user joined', name, socket.username);
             });
         } else {
-            socket.disconnect(true);
+            //socket.disconnect(true);
+            io.of('/').adapter.remoteDisconnect(socket.id, true, (err) => {
+                if (err) { console.log(JSON.stringify(err)) }
+                // success
+            });
         }
     },() => {
         console.log('login failed');
-        socket.disconnect(true);
+        //socket.disconnect(true);
+        io.of('/').adapter.remoteDisconnect(socket.id, true, (err) => {
+            if (err) { console.log(JSON.stringify(err)) }
+            // success
+        });
     }).catch((reason => {
         console.log("Error whlie logging in: " + reason);
     }));

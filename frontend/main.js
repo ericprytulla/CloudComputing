@@ -316,6 +316,7 @@ var ChatComponent = /** @class */ (function () {
             var name = _this.socketService._name;
             users.forEach(function (user) {
                 if (user.name !== name) {
+                    console.log(name);
                     _this.chatrooms.global.pushUser(new User(user.name, user.socket_id, user.image));
                 }
             });
@@ -327,17 +328,22 @@ var ChatComponent = /** @class */ (function () {
             });
         });
         this.socketService._socket.on('group message', function (msg) {
-            _this.toneAnalyzer.moodify(msg.mood.mood);
-            _this.chatrooms[msg.to].pushMessage(new Message(msg.message, msg.media, msg.to, new Date(msg.timeStamp), msg.type, msg.mood.mood, msg.senderId, msg.senderName));
+            console.log(JSON.stringify(msg));
+            if (msg.senderName !== _this.socketService._name) {
+                _this.toneAnalyzer.moodify(msg.mood.mood);
+                _this.chatrooms[msg.to].pushMessage(new Message(msg.message, msg.media, msg.to, new Date(msg.timeStamp), msg.type, msg.mood.mood, msg.senderId, msg.senderName));
+            }
         });
         this.socketService._socket.on('personal message', function (msg) {
-            var message = new Message(msg.message, msg.file, msg.to, new Date(msg.timeStamp), msg.type, msg.mood.mood, msg.senderId, msg.senderName);
-            _this.toneAnalyzer.moodify(msg.mood.mood);
-            if (!_this.chatrooms[msg.senderName]) {
-                _this.chatrooms[msg.senderName] = new Chatroom(msg.senderName, msg.senderId, 'personal', true);
-                _this.chatrooms[msg.senderName].pushUser(_this.chatrooms['global'].findUserById(msg.senderName));
+            if (msg.senderName !== _this.socketService._name) {
+                var message = new Message(msg.message, msg.file, msg.to, new Date(msg.timeStamp), msg.type, msg.mood.mood, msg.senderId, msg.senderName);
+                _this.toneAnalyzer.moodify(msg.mood.mood);
+                if (!_this.chatrooms[msg.senderName]) {
+                    _this.chatrooms[msg.senderName] = new Chatroom(msg.senderName, msg.senderId, 'personal', true);
+                    _this.chatrooms[msg.senderName].pushUser(_this.chatrooms['global'].findUserById(msg.senderName));
+                }
+                _this.chatrooms[msg.senderName].pushMessage(message);
             }
-            _this.chatrooms[msg.senderName].pushMessage(message);
         });
         this.socketService._socket.on('group created', function (name, userId) {
             _this.chatrooms[name] = new Chatroom(name, name, 'group', false);
@@ -608,9 +614,8 @@ var SocketService = /** @class */ (function () {
         this.connected = true;
         this.name = username;
         this.router.navigate(["/chat"]);
-        this._socket.on('disconnect', function (bool) {
-            console.log(bool);
-            if (bool === 'io server disconnect') {
+        this._socket.on('disconnect', function (reason) {
+            if (reason === 'io server disconnect') {
                 _this.name = '';
                 _this.connected = false;
                 _this.router.navigateByUrl('/');

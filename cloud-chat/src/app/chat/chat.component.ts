@@ -116,6 +116,7 @@ export class ChatComponent implements OnInit {
       let name = this.socketService._name;
       users.forEach((user) => {
         if (user.name !== name){
+          console.log(name);
           this.chatrooms.global.pushUser(new User(user.name, user.socket_id, user.image));
         }
       });
@@ -127,17 +128,23 @@ export class ChatComponent implements OnInit {
       });
     });
     this.socketService._socket.on('group message', (msg) => {
-      this.toneAnalyzer.moodify(msg.mood.mood);
-      this.chatrooms[msg.to].pushMessage(new Message(msg.message, msg.media, msg.to, new Date(msg.timeStamp), msg.type, msg.mood.mood, msg.senderId, msg.senderName));
+      console.log(JSON.stringify(msg));
+      if(msg.senderName !== this.socketService._name){
+        this.toneAnalyzer.moodify(msg.mood.mood);
+        this.chatrooms[msg.to].pushMessage(new Message(msg.message, msg.media, msg.to, new Date(msg.timeStamp), msg.type, msg.mood.mood, msg.senderId, msg.senderName));
+      }
+
     });
     this.socketService._socket.on('personal message', (msg) => {
-      let message = new Message(msg.message, msg.file, msg.to, new Date(msg.timeStamp), msg.type, msg.mood.mood, msg.senderId, msg.senderName);
-      this.toneAnalyzer.moodify(msg.mood.mood);
-      if (!this.chatrooms[msg.senderName]){
-        this.chatrooms[msg.senderName] = new Chatroom(msg.senderName, msg.senderId, 'personal', true);
-        this.chatrooms[msg.senderName].pushUser(this.chatrooms['global'].findUserById(msg.senderName));
+      if(msg.senderName !== this.socketService._name) {
+        let message = new Message(msg.message, msg.file, msg.to, new Date(msg.timeStamp), msg.type, msg.mood.mood, msg.senderId, msg.senderName);
+        this.toneAnalyzer.moodify(msg.mood.mood);
+        if (!this.chatrooms[msg.senderName]) {
+          this.chatrooms[msg.senderName] = new Chatroom(msg.senderName, msg.senderId, 'personal', true);
+          this.chatrooms[msg.senderName].pushUser(this.chatrooms['global'].findUserById(msg.senderName));
+        }
+        this.chatrooms[msg.senderName].pushMessage(message);
       }
-      this.chatrooms[msg.senderName].pushMessage(message);
     });
     this.socketService._socket.on('group created', (name, userId) => {
       this.chatrooms[name] = new Chatroom(name, name, 'group', false);
