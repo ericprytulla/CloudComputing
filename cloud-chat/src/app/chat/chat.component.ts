@@ -113,9 +113,9 @@ export class ChatComponent implements OnInit {
       this.sendAlert('user ' + user + ' connected', true);
     });
     this.socketService._socket.on('connected users', (users) => {
-      console.log(JSON.stringify(users));
+      let name = this.socketService._name;
       users.forEach((user) => {
-        if (user.name !== this.socketService._name){
+        if (user.name !== name){
           this.chatrooms.global.pushUser(user);
         }
       });

@@ -313,9 +313,9 @@ var ChatComponent = /** @class */ (function () {
             _this.sendAlert('user ' + user + ' connected', true);
         });
         this.socketService._socket.on('connected users', function (users) {
-            console.log(JSON.stringify(users));
+            var name = _this.socketService._name;
             users.forEach(function (user) {
-                if (user.name !== _this.socketService._name) {
+                if (user.name !== name) {
                     _this.chatrooms.global.pushUser(user);
                 }
             });

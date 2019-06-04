@@ -50,9 +50,7 @@ app.use (function (req, res, next) {
 io.on('connection', function(socket){
     console.log('a user connected');
     socket.username = socket.handshake.query.username;
-    console.log(socket.handshake.query.username);
     login(socket.username, socket.handshake.query.password).then(res => {
-        console.log(res);
         if (res.user){
             socket.preferred_language = res.preferred_language;
             console.log('a user logged in');
@@ -62,7 +60,7 @@ io.on('connection', function(socket){
             });
             groups.map(group => group.users = groupUsers[group.id]);
             socket.emit('existing groups', groups);
-            connect({id: socket.id, name: socket.username, image: res.image}).then((res) => {
+            connect({socket_id: socket.id, name: socket.username, image: res.image}).then((res) => {
 
             });
             socket.on('chat message', function(msg){
@@ -110,7 +108,7 @@ io.on('connection', function(socket){
         console.log('login failed');
         socket.disconnect(true);
     }).catch((reason => {
-        console.log(reason);
+        console.log("Error whlie logging in: " + reason);
     }));
 
 });
@@ -196,7 +194,6 @@ function register(user){
         });
         bcrypt.hash(user.password, 10).then((res) => {
                 user.password = res;
-                console.log(user.user + ": " + res);
                 request.send(JSON.stringify(user));
         });
     });
@@ -244,8 +241,6 @@ function disconnect(id, rev){
                 resolve('Bad Request');
             }
         });
-        console.log("id: " + id);
-        console.log("rev: " + rev);
         request.send(JSON.stringify({"id": id, "rev": rev}));
     })
 }
@@ -277,7 +272,6 @@ function connectedUsers(){
         request.setRequestHeader('Accept', 'application/json');
         request.addEventListener('load', function(event) {
             if (request.status >= 200 && request.status < 300) {
-                console.log("connected users: " + request.responseText);
                 resolve(JSON.parse(request.responseText));
             } else {
                 console.warn("connected users: ", request.responseText);
